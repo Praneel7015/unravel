@@ -245,12 +245,29 @@ class _UnravelKnotSheetState extends State<UnravelKnotSheet> {
         (widget.controller.activeOpenThreads.isNotEmpty
             ? widget.controller.activeOpenThreads.first
             : null);
+    if (target == null) {
+      if (mounted) {
+        setState(() {
+          _saveError = 'This moment is not on this device.';
+        });
+      }
+      return;
+    }
 
-    await widget.controller.completeAfterMomentCheckIn(
-      threadId: target?.id ?? 'thread_adhoc',
-      actualOutcome: _actualOutcome,
-      reflectionNotes: _afterNotesController.text.trim(),
-    );
+    try {
+      await widget.controller.completeAfterMomentCheckIn(
+        threadId: target.id,
+        actualOutcome: _actualOutcome,
+        reflectionNotes: _afterNotesController.text.trim(),
+      );
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _saveError = 'This check-in could not be kept. Try again.';
+        });
+      }
+      return;
+    }
 
     if (mounted) {
       Navigator.of(context).pop();
@@ -830,7 +847,7 @@ class _UnravelKnotSheetState extends State<UnravelKnotSheet> {
             Text('AFTER A MOMENT · REALITY CHECK-IN', style: typo.metaMono),
             const SizedBox(height: 6),
             Text(
-              target?.eventTitle ?? 'Product Design Interview',
+              target?.eventTitle ?? 'This moment is not on this device.',
               style: typo.eventTitleSerif,
             ),
             const SizedBox(height: 16),

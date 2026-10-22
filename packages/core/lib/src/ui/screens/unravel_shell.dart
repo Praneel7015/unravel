@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import '../../database/tables.dart';
 import '../../database/unravel_database.dart';
 import '../../interfaces/sync_and_relay_interfaces.dart';
 import '../../theme/circadian_mode.dart';
@@ -13,6 +13,8 @@ import '../sheets/unravel_knot_sheet.dart';
 import '../state/unravel_journal_controller.dart';
 import 'home_journal_screen.dart';
 import 'sanctuary_screen.dart';
+import 'setup_flow_screen.dart';
+import 'thread_wizard_screen.dart';
 
 /// Top-level Unravel application widget shared by `unravel_foss` and `unravel_store`.
 class UnravelApp extends StatefulWidget {
@@ -40,6 +42,7 @@ class _UnravelAppState extends State<UnravelApp> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     if (widget.controller != null) {
       _controller = widget.controller!;
       _ownsController = false;
@@ -56,6 +59,7 @@ class _UnravelAppState extends State<UnravelApp> {
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     if (_ownsController) {
       _controller.dispose();
     }
@@ -74,7 +78,13 @@ class _UnravelAppState extends State<UnravelApp> {
           title: 'Unravel',
           debugShowCheckedModeBanner: false,
           theme: theme,
-          home: UnravelShell(controller: _controller),
+          home: !_controller.vaultReady
+              ? Scaffold(backgroundColor: theme.scaffoldBackgroundColor)
+              : !_controller.setupComplete
+                  ? SetupFlow(controller: _controller)
+                  : _controller.needsUnlock
+                      ? UnlockJournalScreen(controller: _controller)
+                      : UnravelShell(controller: _controller),
         );
       },
     );
@@ -132,12 +142,10 @@ class _UnravelShellState extends State<UnravelShell> {
   }
 
   void _openUnravelSheet() {
-    unawaited(
-      showUnravelKnotSheet(
-        context: context,
-        controller: widget.controller,
-        initialMode: ReflectionSheetMode.beforeMoment,
-        startVoice: true,
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) =>
+            ThreadWizardScreen(controller: widget.controller),
       ),
     );
   }

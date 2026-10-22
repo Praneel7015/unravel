@@ -88,12 +88,15 @@ class UnraveledWorryItem {
         worryText: raw,
       );
     }
-    if (raw is Map<String, Object?>) {
+    if (raw is Map) {
+      final Map<String, Object?> json = raw.map(
+        (dynamic key, dynamic value) => MapEntry(key.toString(), value as Object?),
+      );
       return UnraveledWorryItem(
-        indexNumber: (raw['idx'] as String?) ?? defaultIdx,
-        worryText: (raw['text'] as String?) ?? '',
-        controlScope: WorryControlScope.fromWire(raw['scope'] as String?),
-        actionOrGrounding: (raw['action'] as String?) ?? '',
+        indexNumber: (json['idx'] as String?) ?? defaultIdx,
+        worryText: (json['text'] as String?) ?? '',
+        controlScope: WorryControlScope.fromWire(json['scope'] as String?),
+        actionOrGrounding: (json['action'] as String?) ?? '',
       );
     }
     return UnraveledWorryItem(indexNumber: defaultIdx, worryText: '');

@@ -1,5 +1,13 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../crypto/envelope_encryption_service.dart';
+import '../../journal/journal_archive.dart';
 import '../../theme/circadian_mode.dart';
 import '../../theme/unravel_theme.dart';
 import '../../theme/unravel_theme_extension.dart';
@@ -22,6 +30,111 @@ class SanctuaryScreen extends StatelessWidget {
   });
 
   final UnravelJournalController controller;
+
+  Future<String?> _askPassphrase(BuildContext context) {
+    final TextEditingController field = TextEditingController();
+    final UnravelThemeExtension ext = context.unravelTheme;
+    final UnravelTypography typo = UnravelTypography.fromExtension(ext);
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          backgroundColor: ext.card,
+          title: Text('Journal passphrase', style: typo.settingTitleSans),
+          content: TextField(
+            controller: field,
+            obscureText: true,
+            style: typo.bodyLarge,
+            decoration: const InputDecoration(labelText: 'Passphrase'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text('Cancel', style: typo.bodyMedium),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(field.text),
+              child: Text('Open file', style: typo.bodyMedium),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _tell(BuildContext context, String message) {
+    final UnravelThemeExtension ext = context.unravelTheme;
+    final UnravelTypography typo = UnravelTypography.fromExtension(ext);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: ext.card,
+        content: Text(message, style: typo.bodyMedium.copyWith(color: ext.textPrimary)),
+      ),
+    );
+  }
+
+  Future<void> _exportJournal(BuildContext context) async {
+    try {
+      final Uint8List bytes = await controller.exportJournalArchive();
+      final Directory dir = await getTemporaryDirectory();
+      final File file = File('${dir.path}/unravel-journal.unravel');
+      await file.writeAsBytes(bytes, flush: true);
+      await Share.shareXFiles(
+        <XFile>[XFile(file.path, mimeType: 'application/octet-stream')],
+        subject: 'Unravel journal',
+      );
+    } on JournalTransferException catch (error) {
+      if (context.mounted) {
+        _tell(context, error.message);
+      }
+    } catch (_) {
+      if (context.mounted) {
+        _tell(context, 'The journal could not be exported.');
+      }
+    }
+  }
+
+  Future<void> _importJournal(BuildContext context) async {
+    try {
+      final FilePickerResult? picked = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: <String>['unravel'],
+      );
+      final String? path = picked?.files.single.path;
+      if (path == null || !context.mounted) {
+        return;
+      }
+      final Uint8List bytes = await File(path).readAsBytes();
+      final JournalArchive archive = JournalArchive.peek(bytes);
+      JournalArchive.assertImportable(
+        edition: archive.edition,
+        isFossBuild: controller.isFossBuild,
+      );
+      if (!context.mounted) {
+        return;
+      }
+      final String? passphrase = await _askPassphrase(context);
+      if (passphrase == null || passphrase.isEmpty || !context.mounted) {
+        return;
+      }
+      await controller.importJournalArchive(bytes: bytes, passphrase: passphrase);
+      if (context.mounted) {
+        _tell(context, 'The journal was brought in. Threads already here were kept.');
+      }
+    } on JournalTransferException catch (error) {
+      if (context.mounted) {
+        _tell(context, error.message);
+      }
+    } on UnravelCryptoException {
+      if (context.mounted) {
+        _tell(context, 'That passphrase does not open this file.');
+      }
+    } catch (_) {
+      if (context.mounted) {
+        _tell(context, 'This file could not be opened.');
+      }
+    }
+  }
 
   Future<void> _showTwoStepPurgeConfirmation(BuildContext context) async {
     final UnravelThemeExtension ext = context.unravelTheme;
@@ -560,26 +673,33 @@ class SanctuaryScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: ext.card,
-                              content: Text(
-                                'Master Data Key wrapped via Argon2id on-device.',
-                                style: typo.bodyMedium.copyWith(
-                                  color: ext.textPrimary,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
+                        onPressed: () => _exportJournal(context),
                         icon: Icon(
-                          Icons.key_outlined,
+                          Icons.ios_share_outlined,
                           size: 18,
                           color: ext.secondaryAccent,
                         ),
                         label: Text(
-                          'Export Seed Recovery Phrase (12 Words)',
+                          'Export journal',
+                          style: typo.bodyMedium.copyWith(
+                            color: ext.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () => _importJournal(context),
+                        icon: Icon(
+                          Icons.file_open_outlined,
+                          size: 18,
+                          color: ext.secondaryAccent,
+                        ),
+                        label: Text(
+                          'Import journal',
                           style: typo.bodyMedium.copyWith(
                             color: ext.textPrimary,
                             fontWeight: FontWeight.w600,

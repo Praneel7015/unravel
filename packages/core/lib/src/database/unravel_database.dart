@@ -262,6 +262,30 @@ class UnravelDatabase extends _$UnravelDatabase {
     return entries;
   }
 
+  /// Replaces one thread during a journal import.
+  Future<void> replaceThread(OpenThreadRecord record) {
+    return into(openThreads).insert(record, mode: InsertMode.insertOrReplace);
+  }
+
+  /// Replaces one perspective log during a journal import.
+  Future<void> replacePerspectiveLog(PerspectiveLogRecord record) {
+    return into(perspectiveLogs).insert(
+      record,
+      mode: InsertMode.insertOrReplace,
+    );
+  }
+
+  /// Writes a finished check-in and the updated thread together.
+  Future<void> saveCheckIn({
+    required OpenThreadRecord thread,
+    required PerspectiveLogRecord log,
+  }) {
+    return transaction(() async {
+      await into(openThreads).insert(thread, mode: InsertMode.insertOrReplace);
+      await into(perspectiveLogs).insert(log, mode: InsertMode.insertOrReplace);
+    });
+  }
+
   /// Atomically wipes all local `PerspectiveLogs` and `OpenThreads` rows
   /// during a Sovereign Vault Purge (Apple Guideline 5.1.1(v) compliance).
   Future<void> purgeAllLocalTables() async {

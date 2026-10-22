@@ -7,6 +7,7 @@ import '../../theme/unravel_theme_extension.dart';
 import '../../theme/unravel_typography.dart';
 import '../sheets/unravel_knot_sheet.dart';
 import '../state/unravel_journal_controller.dart';
+import '../stoic_lines.dart';
 import '../widgets/perspective_curve_painter.dart';
 
 String _eventWhenLabel(DateTime when) {
@@ -205,7 +206,7 @@ class HomeJournalScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      '“We suffer more often in imagination than in reality.”',
+                      '“${stoicLineForDay(DateTime.now()).quote}”',
                       style: typo.quoteSerifItalic,
                     ),
                     const SizedBox(height: 10),
@@ -213,13 +214,16 @@ class HomeJournalScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          '— Seneca',
+                          '— ${stoicLineForDay(DateTime.now()).author}',
                           style: typo.metaMono.copyWith(
                             color: ext.primaryAccent,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Text('Letters from a Stoic', style: typo.metaMono),
+                        Text(
+                          stoicLineForDay(DateTime.now()).source,
+                          style: typo.metaMono,
+                        ),
                       ],
                     ),
                   ],

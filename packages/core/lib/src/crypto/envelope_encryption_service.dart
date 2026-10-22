@@ -8,6 +8,9 @@ import 'package:meta/meta.dart';
 /// matching the Postgres constraint `CHECK (octet_length(encrypted_payload) <= 16384)`.
 const int kMaxEncryptedPayloadBytes = 16384;
 
+/// Local journal files may be larger than a single synced column.
+const int kMaxJournalArchiveBytes = 8 * 1024 * 1024;
+
 /// Exception thrown when an E2EE operation violates security or size invariants.
 class UnravelCryptoException implements Exception {
   const UnravelCryptoException(this.message);
@@ -215,6 +218,102 @@ class EnvelopeEncryptionService {
     }
 
     return serialized;
+  }
+
+  /// Encrypts a whole journal archive. Synced columns stay within
+  /// [kMaxEncryptedPayloadBytes]; this local file may be larger, up to 8 MiB.
+  Future<String> encryptJournalArchive({
+    required String plaintext,
+    required SecretKey masterDataKey,
+  }) {
+    return _encryptEnvelope(
+      plaintext: plaintext,
+      masterDataKey: masterDataKey,
+      associatedData: 'unravel-journal-archive-v1',
+      maxBytes: kMaxJournalArchiveBytes,
+    );
+  }
+
+  /// Decrypts an archive produced by [encryptJournalArchive].
+  Future<String> decryptJournalArchive({
+    required String encryptedEnvelope,
+    required SecretKey masterDataKey,
+  }) {
+    return _decryptEnvelope(
+      encryptedEnvelope: encryptedEnvelope,
+      masterDataKey: masterDataKey,
+      associatedData: 'unravel-journal-archive-v1',
+      maxBytes: kMaxJournalArchiveBytes,
+    );
+  }
+
+  Future<String> _encryptEnvelope({
+    required String plaintext,
+    required SecretKey masterDataKey,
+    required String associatedData,
+    required int maxBytes,
+  }) async {
+    if (plaintext.trim().isEmpty) {
+      throw const UnravelCryptoException(
+        'Refusing to encrypt empty plaintext payload.',
+      );
+    }
+    final Uint8List plaintextBytes = utf8.encoder.convert(plaintext);
+    final List<int> nonce = _cipher.newNonce();
+    final SecretBox secretBox = await _cipher.encrypt(
+      plaintextBytes,
+      secretKey: masterDataKey,
+      nonce: nonce,
+      aad: utf8.encode(associatedData),
+    );
+    final String serialized = '$_envelopeVersionPrefix:'
+        '${base64Encode(secretBox.nonce)}:'
+        '${base64Encode(secretBox.cipherText)}:'
+        '${base64Encode(secretBox.mac.bytes)}';
+    final int byteLength = utf8.encode(serialized).length;
+    if (byteLength > maxBytes) {
+      throw UnravelCryptoException(
+        'Encrypted payload ($byteLength bytes) exceeds hard cap of $maxBytes bytes.',
+      );
+    }
+    return serialized;
+  }
+
+  Future<String> _decryptEnvelope({
+    required String encryptedEnvelope,
+    required SecretKey masterDataKey,
+    required String associatedData,
+    required int maxBytes,
+  }) async {
+    final int byteLength = utf8.encode(encryptedEnvelope).length;
+    if (byteLength > maxBytes) {
+      throw UnravelCryptoException(
+        'Refusing to decrypt oversized payload ($byteLength bytes > $maxBytes).',
+      );
+    }
+    final List<String> parts = encryptedEnvelope.split(':');
+    if (parts.length != 4 || parts[0] != _envelopeVersionPrefix) {
+      throw const UnravelCryptoException(
+        'Unsupported or malformed AES-256-GCM envelope format.',
+      );
+    }
+    final SecretBox secretBox = SecretBox(
+      base64Decode(parts[2]),
+      nonce: base64Decode(parts[1]),
+      mac: Mac(base64Decode(parts[3])),
+    );
+    try {
+      final List<int> clearBytes = await _cipher.decrypt(
+        secretBox,
+        secretKey: masterDataKey,
+        aad: utf8.encode(associatedData),
+      );
+      return utf8.decode(clearBytes);
+    } on SecretBoxAuthenticationError {
+      throw const UnravelCryptoException(
+        'Failed to decrypt payload: authentication tag mismatch or corrupted data.',
+      );
+    }
   }
 
   /// Decrypts an AES-256-GCM envelope produced by [encryptText] and verifies

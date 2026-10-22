@@ -406,38 +406,16 @@ void main() {
         // Mandatory UI Polish Fix #1: Exactly ONE Circadian sun pill ("Dusk · 6:45 PM")
         expect(find.text('Dusk · 6:45 PM'), findsOneWidget);
 
-        // Open the "Unravel a Knot" modal sheet via the floating pill button
+        // Open the thread wizard from the floating pill. It is one screen, with one close button.
         await tester.tap(find.text('Hold to Unravel a Worry'));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 500));
+        await tester.pumpAndSettle();
 
-        // Mandatory UI Polish Fix #2: Single header with ONE close button ('X')
-        expect(find.text('Unravel a Knot'), findsOneWidget);
+        expect(find.text('Name the moment'), findsOneWidget);
         expect(find.byIcon(Icons.close), findsOneWidget);
         expect(find.text('Unravel Entry Modal'), findsNothing);
 
-        // Verify "Before a Moment" is active by default, then toggle to "After a Moment"
-        expect(find.text('Save to Open Threads'), findsOneWidget);
-        await tester.tap(find.text('After a Moment'));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 300));
-
-        expect(
-          find.text('AFTER A MOMENT · REALITY CHECK-IN'),
-          findsOneWidget,
-        );
-        expect(find.text('Record to Perspective Curve'), findsOneWidget);
-
-        // Toggle back to "Before a Moment"
-        await tester.tap(find.text('Before a Moment'));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 300));
-        expect(find.text('Save to Open Threads'), findsOneWidget);
-
-        // Close the sheet
         await tester.tap(find.byTooltip('Dismiss reflection'));
-        await tester.pump();
-        await tester.pump(const Duration(milliseconds: 400));
+        await tester.pumpAndSettle();
       },
     );
 
@@ -639,5 +617,59 @@ void main() {
         );
       },
     );
+  });
+
+  group('Voice distance and one-way journal files', () {
+    test('near speech fills the scale and distant speech stays small', () {
+      expect(EphemeralHardwareVoiceCaptureService.normalizeDbfs(-12), 1);
+      expect(EphemeralHardwareVoiceCaptureService.normalizeDbfs(0), 1);
+      expect(EphemeralHardwareVoiceCaptureService.normalizeDbfs(-48), 0);
+      expect(EphemeralHardwareVoiceCaptureService.normalizeDbfs(-60), 0);
+      final double distant =
+          EphemeralHardwareVoiceCaptureService.normalizeDbfs(-40);
+      expect(distant, greaterThan(0));
+      expect(distant, lessThan(0.2));
+    });
+
+    test('the open-source app refuses a store journal before decrypting it', () {
+      const WrappedMasterKeyBundle wrapped = WrappedMasterKeyBundle(
+        version: 1,
+        argon2SaltBase64: 'c2FsdA==',
+        wrappingNonceBase64: 'bm9uY2U=',
+        wrappedKeyCiphertextBase64: 'Y3Q=',
+        wrappingMacBase64: 'bWFj',
+      );
+      final Uint8List storeFile = JournalArchive.encode(
+        const JournalArchive(
+          edition: JournalArchive.storeEdition,
+          wrappedKey: wrapped,
+          encryptedPayload: 'v1:bm9uY2U=:Y3Q=:bWFj',
+        ),
+      );
+      final JournalArchive peeked = JournalArchive.peek(storeFile);
+      expect(
+        () => JournalArchive.assertImportable(
+          edition: peeked.edition,
+          isFossBuild: true,
+        ),
+        throwsA(isA<JournalTransferException>()),
+      );
+      JournalArchive.assertImportable(
+        edition: peeked.edition,
+        isFossBuild: false,
+      );
+
+      final Uint8List fossFile = JournalArchive.encode(
+        const JournalArchive(
+          edition: JournalArchive.fossEdition,
+          wrappedKey: wrapped,
+          encryptedPayload: 'v1:bm9uY2U=:Y3Q=:bWFj',
+        ),
+      );
+      JournalArchive.assertImportable(
+        edition: JournalArchive.peek(fossFile).edition,
+        isFossBuild: true,
+      );
+    });
   });
 }

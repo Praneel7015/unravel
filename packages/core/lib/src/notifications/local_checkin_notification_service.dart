@@ -103,6 +103,20 @@ class LocalCheckInNotificationService {
     }
   }
 
+  /// Asks the operating system for notification permission after the person
+  /// has already been told what the check-in is for.
+  Future<void> requestCheckInPermission() async {
+    await initialize();
+    try {
+      final AndroidFlutterLocalNotificationsPlugin? android = _plugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+      await android?.requestNotificationsPermission();
+    } catch (_) {
+      // Widget tests and desktops without the plugin simply skip the prompt.
+    }
+  }
+
   void _handleNotificationResponse(NotificationResponse response) {
     final String? threadId = parseThreadIdFromPayload(response.payload);
     if (threadId != null) {

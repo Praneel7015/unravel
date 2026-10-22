@@ -5,6 +5,8 @@ export 'src/crypto/envelope_encryption_service.dart';
 export 'src/database/tables.dart';
 export 'src/database/unravel_database.dart';
 export 'src/interfaces/sync_and_relay_interfaces.dart';
+export 'src/journal/journal_archive.dart';
+export 'src/journal/journal_field_rules.dart';
 export 'src/notifications/local_checkin_notification_service.dart';
 export 'src/theme/circadian_mode.dart';
 export 'src/theme/unravel_theme.dart';
