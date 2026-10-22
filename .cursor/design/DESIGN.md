@@ -82,7 +82,7 @@ typography:
 
   display-serif:
 
-    fontFamily: Newsreader
+    fontFamily: IBM Plex Serif
 
     fontSize: 34px
 
@@ -94,7 +94,7 @@ typography:
 
   quote-serif-italic:
 
-    fontFamily: Newsreader
+    fontFamily: IBM Plex Serif
 
     fontSize: 19px
 
@@ -106,7 +106,7 @@ typography:
 
   headline-sans:
 
-    fontFamily: Plus Jakarta Sans
+    fontFamily: IBM Plex Sans
 
     fontSize: 20px
 
@@ -118,7 +118,7 @@ typography:
 
   body-lg:
 
-    fontFamily: Plus Jakarta Sans
+    fontFamily: IBM Plex Sans
 
     fontSize: 16px
 
@@ -128,7 +128,7 @@ typography:
 
   body-md:
 
-    fontFamily: Plus Jakarta Sans
+    fontFamily: IBM Plex Sans
 
     fontSize: 14px
 
@@ -138,7 +138,7 @@ typography:
 
   meta-mono:
 
-    fontFamily: JetBrains Mono
+    fontFamily: IBM Plex Mono
 
     fontSize: 11px
 
@@ -186,20 +186,20 @@ Visual reference: Readwise Reader meets Things 3 and a physical botanical field 
 
 - **DO NOT** include "Day Streak" counters or gamified flame icons.
 
-- **DO** use `Newsreader` (serif) for screen titles, active life event headings, and the Daily Philosophical Quote banner.
+- **DO** use `IBM Plex Serif` (serif) for screen titles, active life event headings, and the Daily Philosophical Quote banner.
 
 - **DO** use `1px solid` borders `#2A332D` in Dusk Pine, `#DCD8CE` in Morning Mist) with zero blurry neon drop-shadows.
 
 ## Component Specifications
 
-- **Quote Banner Card:** Borderless or subtle top/bottom `1px solid #2A332D` divider, displaying an italic `Newsreader` 19px quote from Stoic or nature philosophy (e.g., Seneca, Marcus Aurelius, Rilke) with a small botanical leaf icon.
+- **Quote Banner Card:** Borderless or subtle top/bottom `1px solid #2A332D` divider, displaying an italic `IBM Plex Serif` 19px quote from Stoic or nature philosophy (e.g., Seneca, Marcus Aurelius, Rilke) with a small botanical leaf icon.
 
-- **Open Thread Card (Event Anchor):** Background `#1C221E`, border `1px solid #2A332D`, radius `16px`, padding `20px`. Features an upcoming real-life event title in `Newsreader` serif, 2 bulleted "Unraveled Worries," 1 warm highlighted "Grounding Anchor" box `background: #242B26`), and a primary pill button `background: #84A98C`, `color: #111C15`, `border-radius: 9999px`).
+- **Open Thread Card (Event Anchor):** Background `#1C221E`, border `1px solid #2A332D`, radius `16px`, padding `20px`. Features an upcoming real-life event title in `IBM Plex Serif` serif, 2 bulleted "Unraveled Worries," 1 warm highlighted "Grounding Anchor" box `background: #242B26`), and a primary pill button `background: #84A98C`, `color: #111C15`, `border-radius: 9999px`).
 
 - **Perspective Curve Card:** Dual smooth spline chart comparing "What My Fear Predicted" `#C97054` muted terracotta dashed line) vs "How Life Actually Unfolded" `#84A98C` solid sage curve).
 
 ## Agent Prompt Guide
 
-- **Primary Button Recipe:** `background: #84A98C`, `color: #111C15`, `font-family: Plus Jakarta Sans`, `font-weight: 600`, `padding: 14px 24px`, `border-radius: 9999px`, no glow shadow.
+- **Primary Button Recipe:** `background: #84A98C`, `color: #111C15`, `font-family: IBM Plex Sans`, `font-weight: 600`, `padding: 14px 24px`, `border-radius: 9999px`, no glow shadow.
 
 - **Card Container Recipe:** `background: #1C221E`, `border: 1px solid #2A332D`, `border-radius: 16px`, `padding: 20px`.

@@ -327,49 +327,7 @@
     if (afterPanel) afterPanel.classList.toggle('is-hidden', isBefore);
   }
 
-  const FONT_STYLESHEETS = {
-    plex: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap',
-    source: 'https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap',
-    literata: 'https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Inconsolata:wght@400;500&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap',
-  };
-
-  function ensureFontStylesheet(id) {
-    const href = FONT_STYLESHEETS[id];
-    if (!href || document.querySelector('link[data-font-href="' + id + '"]')) {
-      return;
-    }
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = href;
-    link.setAttribute('data-font-href', id);
-    document.head.appendChild(link);
-  }
-
-  function applyFont(id) {
-    const resolved = id === 'field' || FONT_STYLESHEETS[id] ? id : 'field';
-    ensureFontStylesheet(resolved);
-    document.documentElement.setAttribute('data-font', resolved);
-    try {
-      localStorage.setItem('unravel-font', resolved);
-    } catch (_) {}
-    document.querySelectorAll('[data-font-select]').forEach((btn) => {
-      const selected = btn.getAttribute('data-font-select') === resolved;
-      btn.classList.toggle('is-active', selected);
-      btn.setAttribute('aria-pressed', selected ? 'true' : 'false');
-    });
-  }
   document.addEventListener('DOMContentLoaded', () => {
-    let savedFont = 'field';
-    try {
-      savedFont = localStorage.getItem('unravel-font') || 'field';
-    } catch (_) {}
-    applyFont(savedFont);
-    document.querySelectorAll('[data-font-select]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        applyFont(btn.getAttribute('data-font-select') || 'field');
-      });
-    });
-
     // 1. Initialize Circadian theme from visitor's local clock
     applyThemeSelection('auto');
 

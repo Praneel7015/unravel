@@ -42,7 +42,7 @@ class VoiceAmplitudeFrame {
   double get progress =>
       (elapsed.inMilliseconds / maxDuration.inMilliseconds).clamp(0.0, 1.0);
 
-  /// Formatted timer label (`0:42 / 1:00`) for `JetBrains Mono` badge.
+  /// Formatted timer label (`0:42 / 1:00`) for the IBM Plex Mono badge.
   String get timerLabel =>
       '${_formatMmSs(elapsed)} / ${_formatMmSs(maxDuration)}';
 

@@ -15,7 +15,6 @@ dependencies:
   drift_flutter: ^0.2.4
   sqlite3_flutter_libs: ^0.5.28
   cryptography: ^2.7.0
-  google_fonts: ^6.2.1
   flutter_local_notifications: ^18.0.1
   timezone: ^0.10.0
   path: ^1.9.0
@@ -34,24 +33,24 @@ flutter:
   assets:
     - assets/fonts/
   fonts:
-    - family: Newsreader
+    - family: IBM Plex Serif
       fonts:
-        - asset: assets/fonts/Newsreader-Regular.ttf
+        - asset: assets/fonts/IBMPlexSerif-Regular.ttf
           weight: 400
-        - asset: assets/fonts/Newsreader-Medium.ttf
+        - asset: assets/fonts/IBMPlexSerif-Medium.ttf
           weight: 500
-        - asset: assets/fonts/Newsreader-Italic.ttf
+        - asset: assets/fonts/IBMPlexSerif-Italic.ttf
           weight: 400
           style: italic
-    - family: Plus Jakarta Sans
+    - family: IBM Plex Sans
       fonts:
-        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
+        - asset: assets/fonts/IBMPlexSans-Regular.ttf
           weight: 400
-        - asset: assets/fonts/PlusJakartaSans-SemiBold.ttf
+        - asset: assets/fonts/IBMPlexSans-SemiBold.ttf
           weight: 600
-    - family: JetBrains Mono
+    - family: IBM Plex Mono
       fonts:
-        - asset: assets/fonts/JetBrainsMono-Regular.ttf
+        - asset: assets/fonts/IBMPlexMono-Regular.ttf
           weight: 400
-        - asset: assets/fonts/JetBrainsMono-Medium.ttf
+        - asset: assets/fonts/IBMPlexMono-Medium.ttf
           weight: 500

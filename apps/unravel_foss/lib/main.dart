@@ -6,7 +6,6 @@ import 'package:unravel_sync_foss/unravel_sync_foss.dart';
 /// Contains ZERO proprietary dependencies, commercial cloud URLs, or API keys.
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  UnravelTypography.enforceAirGappedFonts();
 
   final UnravelSyncEngine syncEngine = FossSyncEngine();
   runApp(

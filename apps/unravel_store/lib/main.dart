@@ -10,7 +10,6 @@ const String _kSupabasePublishableKey =
 /// Entrypoint for `app.unravel.store` (App Store & Play Store Edition).
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  UnravelTypography.enforceAirGappedFonts();
 
   const StoreCloudConfig cloudConfig = StoreCloudConfig(
     cloudUrl: _kCloudUrl,

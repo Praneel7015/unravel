@@ -35,10 +35,10 @@ Unravel’s surface palette shifts automatically with your local sun cycle (`Cir
 | **`23:00–06:00`** | **Midnight Starlight** *(Pure OLED Black)* | `#000000` | `#0B0C0B` | `#222623` | `#F2F0E8` | `#749C82` *(Moonlit Fern)* | `#C97054` *(Terracotta)* |
 
 ### Offline SIL Open Font License (OFL) Typography
-Runtime HTTP font fetching is hard-disabled (`GoogleFonts.config.allowRuntimeFetching = false`). All 7 `.ttf` binaries are bundled directly in `packages/core/assets/fonts/`:
-- **Editorial Serif (`Newsreader`):** Screen headers, event titles, italic Daily Stoic quotes, and spoken transcripts.
-- **Humanist Sans (`Plus Jakarta Sans`):** Body copy, card descriptions, and pill buttons.
-- **Technical Monospace (`JetBrains Mono`):** Circadian time pills, numbered worry indices (`01`, `02`), and 60-second audio timers (`0:42 / 1:00`).
+IBM Plex is bundled for the website, the FOSS app, and the store app. Nothing fetches fonts from Google.
+- **Editorial Serif (`IBM Plex Serif`):** Screen headers, event titles, italic Daily Stoic quotes, and spoken transcripts.
+- **Humanist Sans (`IBM Plex Sans`):** Body copy, card descriptions, and pill buttons.
+- **Technical Monospace (`IBM Plex Mono`):** Circadian time pills, numbered worry indices (`01`, `02`), and 60-second audio timers (`0:42 / 1:00`).
 
 ---
 

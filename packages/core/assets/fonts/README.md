@@ -1,7 +1,9 @@
-# Bundled OFL Fonts for Air-Gapped / F-Droid Compliance
+# Bundled IBM Plex (OFL)
 
-Place the SIL Open Font License (OFL 1.1) `.ttf` files here so `google_fonts` resolves them 100% offline (`GoogleFonts.config.allowRuntimeFetching = false`):
+The FOSS app and the store app share these faces through `unravel_core`. The website serves the matching `.woff2` files from `site/fonts/`. No font is fetched at runtime.
 
-- `Newsreader-Regular.ttf`, `Newsreader-Medium.ttf`, `Newsreader-Italic.ttf`
-- `PlusJakartaSans-Regular.ttf`, `PlusJakartaSans-SemiBold.ttf`
-- `JetBrainsMono-Regular.ttf`, `JetBrainsMono-Medium.ttf`
+- `IBMPlexSerif-Regular.ttf`, `IBMPlexSerif-Medium.ttf`, `IBMPlexSerif-Italic.ttf`
+- `IBMPlexSans-Regular.ttf`, `IBMPlexSans-SemiBold.ttf`
+- `IBMPlexMono-Regular.ttf`, `IBMPlexMono-Medium.ttf`
+
+`OFL-IBMPlex.txt` is the SIL Open Font License that covers these files.

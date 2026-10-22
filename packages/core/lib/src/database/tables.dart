@@ -148,7 +148,7 @@ class OpenThreads extends Table {
   /// Client-generated UUIDv4 primary key.
   TextColumn get id => text()();
 
-  /// Upcoming life event title rendered in `Newsreader` serif (e.g., "Product Design Interview").
+  /// Upcoming life event title rendered in IBM Plex Serif.
   TextColumn get eventTitle => text().withLength(min: 1, max: 280)();
 
   /// JSON-encoded list of numbered [UnraveledWorryItem]s (`01`, `02`, ...) unraveled before the moment.
