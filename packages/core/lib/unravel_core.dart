@@ -1,0 +1,18 @@
+library unravel_core;
+
+export 'src/audio/voice_capture_service.dart';
+export 'src/crypto/envelope_encryption_service.dart';
+export 'src/database/tables.dart';
+export 'src/database/unravel_database.dart';
+export 'src/interfaces/sync_and_relay_interfaces.dart';
+export 'src/notifications/local_checkin_notification_service.dart';
+export 'src/theme/circadian_mode.dart';
+export 'src/theme/unravel_theme.dart';
+export 'src/theme/unravel_theme_extension.dart';
+export 'src/theme/unravel_typography.dart';
+export 'src/ui/screens/home_journal_screen.dart';
+export 'src/ui/screens/sanctuary_screen.dart';
+export 'src/ui/screens/unravel_shell.dart';
+export 'src/ui/sheets/unravel_knot_sheet.dart';
+export 'src/ui/state/unravel_journal_controller.dart';
+export 'src/ui/widgets/perspective_curve_painter.dart';

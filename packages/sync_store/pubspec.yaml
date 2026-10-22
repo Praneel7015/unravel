@@ -1,0 +1,23 @@
+name: unravel_sync_store
+description: Managed Supabase Cloud E2EE Sync, RevenueCat/StoreKit/Play Billing entitlement gate, and Multi-Model Cloud Relay.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  unravel_core:
+    path: ../core
+  supabase_flutter: ^2.8.2
+  purchases_flutter: ^8.4.0
+  http: ^1.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dusk-pine">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unravel — Circadian Botanical &amp; Stoic Field Journal</title>
+  <meta
+    name="description"
+    content="Untangle pre-event worry through Epictetus's Dichotomy of Control and see how reality actually unfolds on the Perspective Curve. Zero streaks, E2EE, F-Droid &amp; Store."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Sticky Top Circadian Bar & Navigation -->
+  <header class="sticky-bar" role="banner">
+    <div class="container bar-inner">
+      <a href="#top" class="brand-lockup" aria-label="Unravel Home">
+        <span class="brand-serif">Unravel</span>
+        <span class="brand-tag mono">FIELD JOURNAL v0.1</span>
+      </a>
+      <div class="type-switch" role="radiogroup" aria-label="Typeface">
+        <button type="button" class="type-option is-active" data-font-select="field">Field</button>
+        <button type="button" class="type-option" data-font-select="plex">Plex</button>
+        <button type="button" class="type-option" data-font-select="source">Source</button>
+        <button type="button" class="type-option" data-font-select="literata">Literata</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero Section -->
+    <section class="hero-section container">
+      <h1 class="display-serif hero-title">
+        Untangle what fear predicts<br />
+        <em>from how life actually unfolds.</em>
+      </h1>
+
+      <p class="hero-lead">
+        A field journal built on the philosophy of Seneca and Epictetus's
+        <strong>Dichotomy of Control</strong>. Separate upcoming moments into what lies within your craft
+        versus what belongs to external fortune—then watch your own nervous system's evidence on the
+        <strong>Perspective Curve</strong>.
+      </p>
+
+      <!-- Daily Stoic Quote Specimen Card -->
+      <article class="specimen-card quote-banner" aria-label="Daily Stoic Reflection">
+        <p class="quote-serif">
+          “We suffer more often in imagination than in reality.”
+        </p>
+        <div class="quote-footer">
+          <span class="mono">SENECA · LETTERS FROM A STOIC, XIII</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- Feature B: Interactive Browser Demo ("Try Unraveling a Worry") -->
+    <section class="demo-section container" id="interactive-demo" aria-labelledby="demo-heading">
+      <div class="section-header">
+        <div>
+          <span class="section-kicker mono">INTERACTIVE FIELD JOURNAL</span>
+          <h2 class="section-title-serif" id="demo-heading">Try Unraveling a Worry</h2>
+        </div>
+      </div>
+      <div>
+        <p class="section-subtitle">
+          Select a real-life moment below, switch between <strong>Before a Moment</strong> and
+          <strong>After a Moment</strong>, and drag the reality slider to bend the Perspective Curve.
+        </p>
+      </br>
+      </div>
+
+      <!-- Sample Anxiety Scenario Pills -->
+      <div class="scenario-selector" role="tablist" aria-label="Sample Life Moments">
+        <button
+          type="button"
+          class="scenario-pill is-selected"
+          data-scenario="interview"
+          role="tab"
+          aria-selected="true"
+        >
+          <span>Product Design Interview</span>
+        </button>
+        <button
+          type="button"
+          class="scenario-pill"
+          data-scenario="boundary"
+          role="tab"
+          aria-selected="false"
+        >
+          <span>Setting a Boundary with a Manager</span>
+        </button>
+        <button
+          type="button"
+          class="scenario-pill"
+          data-scenario="dinner"
+          role="tab"
+          aria-selected="false"
+        >
+          <span>Going to a Dinner Alone</span>
+        </button>
+      </div>
+
+      <!-- Interactive Dual-Column Workbench -->
+      <div class="workbench-grid">
+        <!-- Left Column: Unravel a Knot Modal Preview -->
+        <div class="specimen-card knot-sheet-card">
+          <div class="sheet-top-row">
+            <div>
+              <h3 class="event-serif" id="demo-event-title">Product Design Interview</h3>
+              <span class="mono muted-text" id="demo-event-meta">OPEN THREAD · TOMORROW 10:00 AM</span>
+            </div>
+            <span class="mono badge-pill" id="demo-fear-badge">FEAR: 8 / 10</span>
+          </div>
+
+          <!-- Segmented Before / After Mode Toggle -->
+          <div class="segmented-toggle" role="tablist" aria-label="Reflection Phase">
+            <button
+              type="button"
+              class="seg-btn is-active"
+              id="tab-before-moment"
+              data-phase="before"
+              role="tab"
+              aria-selected="true"
+            >
+              <span class="seg-title">Before a Moment</span>
+              <span class="mono seg-sub">(Untangle Worries)</span>
+            </button>
+            <button
+              type="button"
+              class="seg-btn"
+              id="tab-after-moment"
+              data-phase="after"
+              role="tab"
+              aria-selected="false"
+            >
+              <span class="seg-title">After a Moment</span>
+              <span class="mono seg-sub">(How Reality Unfolded)</span>
+            </button>
+          </div>
+
+          <!-- Before a Moment Panel -->
+          <div id="panel-before" class="phase-panel">
+            <div class="transcript-box">
+              <div class="transcript-header">
+                <span class="mono">VOICE REFLECTION · 30FPS EPHEMERAL RAM</span>
+                <span class="mono accent-secondary" id="live-voice-timer">0:00 / 1:00</span>
+              </div>
+
+              <!-- Live 30fps Dual-Ribbon Waveform SVG -->
+              <div class="waveform-stage">
+                <svg
+                  id="live-waveform-svg"
+                  viewBox="0 0 420 54"
+                  preserveAspectRatio="none"
+                  aria-label="30fps Botanical Voice Waveform"
+                >
+                  <path
+                    id="wave-ribbon-primary"
+                    d="M 0 27 C 50 12, 100 42, 150 25 C 200 10, 260 44, 310 27 C 360 15, 395 39, 420 26"
+                    class="wave-primary"
+                  />
+                  <path
+                    id="wave-ribbon-secondary"
+                    d="M 0 29 C 60 42, 115 12, 175 30 C 235 46, 285 11, 345 24 C 380 35, 405 19, 420 28"
+                    class="wave-secondary"
+                  />
+                </svg>
+              </div>
+
+              <div class="mic-action-row">
+                <button
+                  type="button"
+                  class="btn btn-primary btn-mic-hold"
+                  id="btn-hold-unravel"
+                >
+                  <span class="brand-dot" style="background: var(--on-primary);"></span>
+                  <span id="btn-hold-label">Hold or Click to Unravel a Worry (Live 30fps Mic)</span>
+                </button>
+                <span class="mono muted-text" id="mic-status-badge">RAM Buffer: 0 bytes</span>
+              </div>
+
+              <p class="transcript-italic" id="demo-transcript" contenteditable="true" spellcheck="false">
+                “I keep thinking that if I pause for too long during the portfolio review, the panel will assume I didn’t build the system myself...”
+              </p>
+            </div>
+
+            <!-- Dual Lens: What Fear Says vs Grounded Truth -->
+            <div class="dual-lens-grid">
+              <div class="lens-card lens-fear">
+                <span class="mono lens-label">WHAT FEAR SAYS</span>
+                <p class="transcript-italic" id="demo-fear-says">
+                  “Any silence means they think I'm unqualified.”
+                </p>
+                <span class="mono micro-tag tag-fear">Anxiety Projection</span>
+              </div>
+              <div class="lens-card lens-truth">
+                <span class="mono lens-label">GROUNDED TRUTH</span>
+                <p class="lens-body" id="demo-grounded-truth">
+                  Thoughtful pauses show composure. Nobody expects instant answers to complex trade-offs.
+                </p>
+                <span class="mono micro-tag tag-truth">Calibrated Reality</span>
+              </div>
+            </div>
+
+            <!-- Numbered Worries (01 WITHIN MY CONTROL, 02 BEYOND MY CONTROL) -->
+            <div class="worry-list">
+              <div class="worry-item">
+                <div class="worry-item-header">
+                  <span class="mono worry-index idx-within">01</span>
+                  <span class="mono micro-tag tag-truth">WITHIN MY CONTROL</span>
+                </div>
+                <p class="worry-text" id="demo-worry-1">
+                  I might freeze up when asked about system architecture trade-offs.
+                </p>
+                <p class="worry-step mono" id="demo-action-1">
+                  Next Step: Sketch 2 past projects on index cards tonight.
+                </p>
+              </div>
+
+              <div class="worry-item">
+                <div class="worry-item-header">
+                  <span class="mono worry-index idx-beyond">02</span>
+                  <span class="mono micro-tag tag-fear">BEYOND MY CONTROL</span>
+                </div>
+                <p class="worry-text" id="demo-worry-2">
+                  What if they already have an internal candidate in mind?
+                </p>
+                <p class="worry-step mono" id="demo-action-2">
+                  Grounding: I cannot control their budget, only the clarity of my craft.
+                </p>
+              </div>
+            </div>
+
+            <!-- Physical Grounding Anchor -->
+            <div class="grounding-box">
+              <span class="mono grounding-label">PHYSICAL ANCHOR</span>
+              <p class="grounding-body" id="demo-physical-anchor" contenteditable="true" spellcheck="false">
+                Rest both hands flat on the desk before beginning your slide walkthrough. Feel the ground beneath you.
+              </p>
+            </div>
+
+            <!-- Create Real Open Thread Action -->
+            <div class="save-thread-row">
+              <input
+                type="text"
+                id="custom-thread-input"
+                class="thread-input"
+                placeholder="Type something coming up."
+              />
+              <button type="button" class="btn btn-primary" id="btn-save-open-thread">
+                <span>Save to Open Threads</span>
+              </button>
+            </div>
+            <p class="mono muted-text" id="saved-thread-toast" aria-live="polite"></p>
+          </div>
+
+          <!-- After a Moment Panel -->
+          <div id="panel-after" class="phase-panel is-hidden">
+            <div class="after-checkin-box">
+              <span class="mono">AFTER A MOMENT · GENTLE OFFLINE CHECK-IN</span>
+              <p class="after-notes" id="demo-after-notes">
+                “They actually appreciated that I paused to think through the latency trade-off before answering. The conversation felt like peers collaborating.”
+              </p>
+              <div class="slider-control-group">
+                <div class="slider-row">
+                  <label for="input-predicted-fear" class="mono">WHAT MY FEAR PREDICTED</label>
+                  <span class="mono fear-val" id="label-predicted-fear">8 / 10</span>
+                </div>
+                <input
+                  type="range"
+                  id="input-predicted-fear"
+                  min="1"
+                  max="10"
+                  value="8"
+                  class="unravel-slider slider-fear"
+                />
+              </div>
+
+              <div class="slider-control-group">
+                <div class="slider-row">
+                  <label for="input-actual-reality" class="mono">HOW LIFE ACTUALLY UNFOLDED (DRAG ME)</label>
+                  <span class="mono reality-val" id="label-actual-reality">2 / 10</span>
+                </div>
+                <input
+                  type="range"
+                  id="input-actual-reality"
+                  min="1"
+                  max="10"
+                  value="2"
+                  class="unravel-slider slider-reality"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Live Interactive Perspective Curve SVG -->
+        <div class="specimen-card curve-card">
+          <div class="curve-header">
+            <div>
+              <span class="mono">THE PERSPECTIVE CURVE</span>
+              <h3 class="event-serif">What Fear Predicted vs. How Life Unfolded</h3>
+            </div>
+            <span class="mono badge-gentler" id="curve-gentler-badge">78% gentler than feared</span>
+          </div>
+
+          <div class="svg-chart-frame">
+            <svg
+              id="perspective-svg"
+              viewBox="0 0 520 220"
+              preserveAspectRatio="none"
+              role="img"
+              aria-label="Dual spline chart comparing predicted fear and actual reality"
+            >
+              <defs>
+                <linearGradient id="realityAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="var(--accent-primary)" stop-opacity="0.28" />
+                  <stop offset="100%" stop-color="var(--accent-primary)" stop-opacity="0.0" />
+                </linearGradient>
+              </defs>
+              <!-- Reference Grid Lines -->
+              <line x1="0" y1="52" x2="520" y2="52" class="grid-dashed" />
+              <line x1="0" y1="145" x2="520" y2="145" class="grid-dashed" />
+
+              <!-- Dynamic Area & Splines populated by app.js -->
+              <path id="svg-reality-area" d="" fill="url(#realityAreaGrad)" />
+              <path id="svg-fear-path" d="" class="path-fear-dashed" />
+              <path id="svg-reality-path" d="" class="path-reality-solid" />
+
+              <circle id="svg-fear-dot" cx="480" cy="48" r="5.5" class="dot-fear" />
+              <circle id="svg-reality-dot" cx="480" cy="175" r="5.5" class="dot-reality" />
+            </svg>
+          </div>
+
+          <div class="curve-legend">
+            <div class="legend-item">
+              <span class="legend-line legend-fear"></span>
+              <span class="mono">What Fear Predicted (Dashed Terracotta)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-line legend-reality"></span>
+              <span class="mono">How Life Unfolded (Solid Botanical Moss)</span>
+            </div>
+          </div>
+
+          <!-- Inline Interactive Slider Shortcut on Curve Card -->
+          <div class="curve-quick-slider">
+            <div class="slider-row">
+              <label for="quick-reality-slider" class="mono">
+                DRAG LATEST OUTCOME TO TEST THE CURVE:
+              </label>
+            </br>
+            </div>
+            <span class="mono" id="quick-reality-readout">Predicted 8/10 → Unfolded 2/10</span>
+            <input
+              type="range"
+              id="quick-reality-slider"
+              min="1"
+              max="10"
+              value="2"
+              class="unravel-slider slider-reality"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visual Field Specimens (App Screenshots Showcase) -->
+    <section class="screenshots-section container" aria-labelledby="specimens-heading">
+      <div class="section-header">
+        <div>
+          <span class="section-kicker mono">CIRCADIAN BOTANICAL SPECIMENS</span>
+          <h2 class="section-title-serif" id="specimens-heading">Four Surfaces Shifting With the Sun</h2>
+        </div>
+        <p class="section-subtitle">
+          Crafted with <code>1px solid</code> botanical borders, zero drop-shadow bloat, and bundled offline
+          SIL Open Font License typography.
+        </p>
+      </div>
+
+      <div class="screenshot-grid">
+        <figure class="specimen-card shot-card">
+          <img
+            src="../.cursor/design/screenshots/03_home_morning_mist.png"
+            alt="Unravel Home Journal in Morning Mist Birch Paper Light theme"
+            loading="lazy"
+          />
+          <figcaption class="mono">06:00–11:00 · MORNING MIST (#F6F5F0)</figcaption>
+        </figure>
+        <figure class="specimen-card shot-card">
+          <img
+            src="../.cursor/design/screenshots/01_home_dusk_pine.png"
+            alt="Unravel Home Journal in Dusk Pine Evening Nature Dark theme"
+            loading="lazy"
+          />
+          <figcaption class="mono">17:30–23:00 · DUSK PINE (#141815)</figcaption>
+        </figure>
+        <figure class="specimen-card shot-card">
+          <img
+            src="../.cursor/design/screenshots/04_unravel_entry_modal_dusk_pine.png"
+            alt="Unravel a Knot sheet showing Voice Reflection and Stoic Dichotomy of Control"
+            loading="lazy"
+          />
+          <figcaption class="mono">UNRAVEL A KNOT · STOIC DICHOTOMY</figcaption>
+        </figure>
+        <figure class="specimen-card shot-card">
+          <img
+            src="../.cursor/design/screenshots/08_sanctuary_midnight_starlight_oled.png"
+            alt="Sanctuary screen in Midnight Starlight Pure OLED Black theme"
+            loading="lazy"
+          />
+          <figcaption class="mono">23:00–06:00 · STARLIGHT OLED (#000000)</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Feature C: Honest Open-Core Matrix -->
+    <section class="editions-section container" id="editions" aria-labelledby="editions-heading">
+      <div class="section-header">
+        <div>
+          <span class="section-kicker mono">HONEST OPEN-CORE ARCHITECTURE</span>
+          <h2 class="section-title-serif" id="editions-heading">Two Editions. Zero Surveillance.</h2>
+        </div>
+        <p class="section-subtitle">
+          F-Droid and Free users cost $0.00 in server bills and never touch proprietary SDKs.
+          Sanctuary Cloud funds ongoing independent development.
+        </p>
+      </div>
+
+      <div class="matrix-grid">
+        <!-- Libre / FOSS Edition -->
+        <article class="specimen-card edition-card">
+          <div class="edition-top">
+            <span class="mono badge-pill">F-DROID &amp; GITHUB RELEASES</span>
+            <h3 class="display-serif edition-name">Libre / FOSS Edition</h3>
+            <p class="edition-price mono">$0 Forever · Air-Gapped by Default</p>
+          </div>
+          <ul class="edition-features">
+            <li><strong>Package ID:</strong> <code>app.unravel.foss</code> (100% reproducible build)</li>
+            <li><strong>Zero Proprietary Blobs:</strong> No Play Billing, RevenueCat, Firebase, or GMS anywhere in the dependency tree</li>
+            <li><strong>Local Encrypted Vault:</strong> On-device Drift SQLite + AES-256-GCM &amp; Argon2id key wrapping</li>
+            <li><strong>Sovereign Sync:</strong> Self-hosted WebDAV / Nextcloud over HTTPS (`docker-compose.yml` included)</li>
+            <li><strong>Sovereign Intelligence:</strong> Connect directly to local Ollama (`http://localhost:11434`) or Bring Your Own API Key (BYOK)</li>
+            <li><strong>Offline Typography &amp; Check-Ins:</strong> Bundled OFL fonts &amp; local OS alarm notifications</li>
+          </ul>
+          <div class="edition-actions">
+            <a href="https://f-droid.org" class="btn btn-secondary full-width" target="_blank" rel="noopener">
+              <span>Download on F-Droid (`app.unravel.foss`)</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- Sanctuary Cloud Edition -->
+        <article class="specimen-card edition-card edition-featured">
+          <div class="edition-top">
+            <span class="mono badge-gentler">APP STORE &amp; GOOGLE PLAY</span>
+            <h3 class="display-serif edition-name">Sanctuary Cloud Edition</h3>
+            <p class="edition-price mono">7-Day Free Trial · $3.99 / month</p>
+          </div>
+          <ul class="edition-features">
+            <li><strong>Package ID:</strong> <code>app.unravel.store</code> (iOS, macOS &amp; Android)</li>
+            <li><strong>Everything in Libre Edition, plus:</strong> Zero-configuration multi-device sync &amp; AI relay</li>
+            <li><strong>Zero-Knowledge E2EE Cloud Sync:</strong> Reflections encrypted on-device with AES-256-GCM (`&lt;= 16 KiB` envelopes) before upload; server holds zero keys</li>
+            <li><strong>Resilient Multi-Model Stoic Relay:</strong> Primary + fallback LLM routing (12s timeout failover) with zero prompt retention or training</li>
+            <li><strong>Predictable Fair-Use Caps:</strong> 15 AI untangling calls during 7-day trial, 20 calls/day on Pro</li>
+            <li><strong>Two-Tap Account &amp; Vault Purge:</strong> Instant local + `delete_my_account()` server purge at any time</li>
+          </ul>
+          <div class="edition-actions">
+            <a href="#top" class="btn btn-primary full-width">
+              <span>Get on App Store &amp; Google Play</span>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Creator's Manifesto & Patronage Callout -->
+    <section class="manifesto-section container" id="manifesto" aria-labelledby="manifesto-heading">
+      <div class="specimen-card manifesto-card">
+        <span class="section-kicker mono">CREATOR’S MANIFESTO · § 04</span>
+        <h2 class="display-serif manifesto-title" id="manifesto-heading">Why Unravel Exists</h2>
+        <div class="manifesto-prose">
+          <p>
+            Most mental wellness apps are engineered like slot machines. They wrap your quietest vulnerabilities
+            in day-streak counters, flame icons, push-notification guilt, and unencrypted cloud databases so they can
+            report “Daily Active Users” to venture capital boards.
+          </p>
+          <p>
+            <strong>Anxiety cannot be healed by an app that makes you anxious about losing a streak.</strong>
+            Unravel was built as an antidote: a tactile field journal that steps out of the way. You open it only
+            when an upcoming moment feels knotted in your chest, untangle what belongs to your craft from what belongs
+            to fortune, and return after the moment has passed to see—in your own data—that reality is almost always
+            gentler than fear predicted.
+          </p>
+        </div>
+
+        <div class="sponsor-box">
+          <div>
+            <h3 class="event-serif">Support Independent Developer Software</h3>
+            <p class="section-subtitle">
+              Unravel has/will have zero ads, zero tracking pixels. The marks in the footer
+              are how the Libre edition stays independent.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner container">
+      <div class="footer-meta">
+        <p class="brand-serif footer-name">Unravel</p>
+        <p class="mono">v0.1.0 · Birchwood · AES-256-GCM + Argon2id · Zero Streaks</p>
+        <p class="safe-harbor-foot">
+          Unravel is a field journal for personal contemplation, not a medical device,
+          clinical diagnostic tool, or substitute for professional mental health care.
+        </p>
+      </div>
+      <nav class="footer-marks" aria-label="Download and support">
+        <a class="mark-link" href="#editions">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.9-3.5.9s-1.8-.8-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-.1 2.9-2.2c.7-1 1.2-2.1 1.5-3.2-3.9-1.5-3.8-5.5-2.8-6.3zM14.7 6.2c.6-.8 1.1-1.9.9-3-1 .1-2.1.6-2.8 1.4-.6.7-1.2 1.8-.9 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg>
+          <span>App Store</span>
+        </a>
+        <a class="mark-link" href="#editions">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3.2c-.3.3-.5.8-.5 1.4v14.8c0 .6.2 1.1.5 1.4l.1.1 8.3-8.3v-.2L4.6 3.1l-.1.1zm9.2 9.3 2.3 2.3 4.1-2.3c.8-.4.8-1.1 0-1.6l-4.1-2.3-2.3 2.3v1.6zm-1-1.1 2.5-2.5-7.8-4.5c-.4-.2-.8-.2-1.1 0l6.4 7zm0 1.6-6.4 7c.3.2.7.2 1.1 0l7.8-4.5-2.5-2.5z"/></svg>
+          <span>Google Play</span>
+        </a>
+        <a class="mark-link" href="#editions">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2 4.2 6.4v6.2c0 4.6 3.2 8.8 7.8 9.8 4.6-1 7.8-5.2 7.8-9.8V6.4L12 2.2zm0 2.3 6.2 3.3v4.8c0 3.6-2.4 6.9-6.2 7.8-3.8-.9-6.2-4.2-6.2-7.8V7.8L12 4.5zM11 8h2v5h-2V8zm0 6.2h2V16h-2v-1.8z"/></svg>
+          <span>F-Droid</span>
+        </a>
+        <a class="mark-link" href="https://github.com/unravel-journal/unravel" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .8.1-.6.4-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-5a3.9 3.9 0 0 1 1-2.7 3.6 3.6 0 0 1 .1-2.6s.8-.3 2.8 1a9.6 9.6 0 0 1 5 0c2-1.3 2.8-1 2.8-1a3.6 3.6 0 0 1 .1 2.6 3.9 3.9 0 0 1 1 2.7c0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2.2z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a class="mark-link" href="https://github.com/sponsors" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.4s-6.8-4.3-9.2-8.2C1.2 9.6 2.1 6.2 5.2 5.2c1.8-.6 3.6.1 4.7 1.5L12 8.4l2.1-1.7c1.1-1.4 2.9-2.1 4.7-1.5 3.1 1 4 4.4 2.4 7-2.4 3.9-9.2 8.2-9.2 8.2z"/></svg>
+          <span>Sponsors</span>
+        </a>
+        <a class="mark-link" href="https://liberapay.com" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.2 3.2h3.1c3.6 0 6 2.2 6 5.5 0 2.4-1.3 4.2-3.4 5l3.8 7.1h-3.4l-3.4-6.6H11v6.6H8.2V3.2zm2.8 2.6v5.2h.7c1.8 0 2.9-1 2.9-2.6s-1.1-2.6-2.9-2.6h-.7z"/></svg>
+          <span>Liberapay</span>
+        </a>
+        <a class="mark-link" href="https://ko-fi.com" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5h11.2a3.3 3.3 0 0 1 0 6.6H16V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6.5zm11.2 4.6a1.3 1.3 0 0 0 0-2.6H16v2.6h.2zM8.2 9.2h4.2v1.6H8.2V9.2z"/></svg>
+          <span>Ko-fi</span>
+        </a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

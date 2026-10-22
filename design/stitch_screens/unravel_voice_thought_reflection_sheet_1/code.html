@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-morning-card": "#EFECE6", "on-error": "#690005", "surface-tint": "#aad0b1", "accent-morning-moss": "#4A6B53", "on-surface": "#181A18", "on-tertiary-container": "#63220c", "on-secondary-container": "#e5a967", "secondary-fixed": "#ffdcbb", "on-primary-fixed": "#00210e", "on-primary-container": "#1c3e27", "primary-fixed-dim": "#aad0b1", "primary-fixed": "#c5eccc", "primary": "#3B5944", "on-tertiary-fixed-variant": "#78311a", "on-primary-fixed-variant": "#2c4e36", "surface": "#EAE8E1", "inverse-on-surface": "#2d312e", "on-primary": "#F6F5F0", "on-background": "#181A18", "outline-variant": "#CCC8BE", "surface-oled-card": "#0B0C0B", "surface-container": "#E0DDD5", "tertiary-fixed": "#ffdbd0", "accent-morning-clay": "#C87D55", "surface-container-high": "#D8D5CC", "error-container": "#93000a", "border-morning": "#DCD8CE", "surface-morning-canvas": "#F6F5F0", "surface-sun-card": "#E0DDD5", "primary-container": "#3B5944", "on-secondary": "#482900", "tertiary-container": "#C87D55", "on-error-container": "#ffdad6", "secondary-fixed-dim": "#f9ba76", "surface-bright": "#F6F5F0", "inverse-surface": "#181A18", "on-secondary-fixed-variant": "#673d01", "error": "#BA1A1A", "text-sun-primary": "#181A18", "on-tertiary-fixed": "#3a0b00", "text-oled-primary": "#F2F0E8", "text-morning-muted": "#585D56", "secondary": "#C87D55", "border-sun": "#CCC8BE", "surface-container-highest": "#D0CDC4", "accent-sun-sage": "#3B5944", "accent-oled-fern": "#3B5944", "surface-oled-canvas": "#000000", "on-tertiary": "#FFFFFF", "surface-container-lowest": "#F6F5F0", "surface-container-low": "#E6E3DB", "text-morning-primary": "#181A18", "tertiary": "#C87D55", "on-surface-variant": "#585D56", "on-secondary-fixed": "#2b1700", "secondary-container": "#F5E5DC", "surface-dim": "#D8D5CC", "outline": "#CCC8BE", "surface-sun-canvas": "#EAE8E1", "surface-variant": "#E0DDD5", "background": "#EAE8E1", "tertiary-fixed-dim": "#ffb59e", "inverse-primary": "#aad0b1", "border-oled": "#CCC8BE" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "card-padding": "20px", "section-gap": "28px", "space-sm": "8px", "space-lg": "20px", "space-xl": "28px", "margin": "20px", "space-xs": "4px", "gutter": "16px", "space-md": "16px" }, "fontFamily": { "body-lg": ["Plus Jakarta Sans"], "meta-mono": ["JetBrains Mono"], "label-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "display-serif": ["Newsreader"], "quote-serif-italic": ["Newsreader"], "headline-sans": ["Plus Jakarta Sans"], "display-serif-mobile": ["Newsreader"] }, "fontSize": { "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "meta-mono": ["11px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "400" }], "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "title-md": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "display-serif": ["34px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "400" }], "quote-serif-italic": ["19px", { "lineHeight": "28px", "fontWeight": "400" }], "headline-sans": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "display-serif-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "400" }] } } } }</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head><body class="bg-[#EAE8E1] font-body-md text-body-md text-[#181A18] flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-[#EAE8E1]/90 backdrop-blur-xl pt-safe border-b border-[#CCC8BE]"><div class="h-16 px-margin flex items-center justify-between"><button aria-label="Close" class="flex items-center justify-center w-11 h-11 -ml-2 rounded-full text-[#585D56] hover:text-[#181A18] transition-colors" onclick="history.back()"><span class="material-symbols-outlined text-[20px]">close</span></button><div class="flex flex-col items-center"><span class="font-meta-mono text-meta-mono text-[#3B5944] uppercase tracking-wider">Field Specimen</span><h1 class="font-title-md text-title-md text-[#181A18]">Unravel Entry Modal</h1></div><div class="w-8 h-8 rounded-full bg-[#3B5944] flex items-center justify-center"><span class="material-symbols-outlined text-[#F6F5F0] text-[18px]">person</span></div></div></header><main class="flex-1 w-full bg-[#EAE8E1] pt-16 pb-safe px-margin flex flex-col"><div class="flex flex-col w-full pb-8 space-y-6">
+<!-- 1. Top Sub-Header & Circadian Context Toggle -->
+<div class="flex flex-col space-y-4 pt-1">
+<div class="flex items-center justify-between">
+<div class="flex items-baseline space-x-2">
+<h2 class="font-display-serif-mobile text-display-serif-mobile text-[#181A18]">Unravel a Knot</h2>
+<span class="font-meta-mono text-meta-mono text-[#585D56]">№ 04</span>
+</div>
+<button aria-label="Dismiss reflection" class="w-8 h-8 rounded-full bg-[#E0DDD5] border border-[#CCC8BE] flex items-center justify-center text-[#585D56] hover:text-[#181A18] transition-colors" type="button">
+<span class="material-symbols-outlined text-[17px]">close</span>
+</button>
+</div>
+<!-- Segmented Pill Toggle -->
+<div class="bg-[#E0DDD5] border border-[#CCC8BE] p-1 rounded-full flex items-center justify-between">
+<button class="flex-1 bg-[#3B5944] text-[#F6F5F0] font-label-md text-label-md py-2 px-3 rounded-full text-center transition-all shadow-sm" type="button">
+        Before a Moment <span class="opacity-80 text-[11px] block sm:inline">(Untangle Worries)</span>
+</button>
+<button class="flex-1 text-[#585D56] font-label-md text-label-md py-2 px-3 rounded-full text-center hover:text-[#181A18] transition-all" type="button">
+        After a Moment <span class="opacity-70 text-[11px] block sm:inline">(How It Unfolded)</span>
+</button>
+</div>
+</div>
+<!-- 2. Organic Voice Capture Card -->
+<div class="bg-[#E0DDD5] border border-[#CCC8BE] rounded-xl p-card-padding flex flex-col space-y-4">
+<!-- Meta row -->
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-[16px] text-[#3B5944]">graphic_eq</span>
+<span class="font-meta-mono text-meta-mono uppercase tracking-wider text-[#585D56]">Voice Reflection</span>
+</div>
+<span class="font-meta-mono text-meta-mono text-[#C87D55] font-medium">0:42 / 1:00</span>
+</div>
+<!-- Intertwined Organic Waveform Graphic (SVG) -->
+<div class="w-full h-12 bg-[#EAE8E1] border border-[#CCC8BE]/60 rounded-lg p-2 flex items-center relative overflow-hidden">
+<svg class="w-full h-10" fill="none" preserveaspectratio="none" viewbox="0 0 320 40" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="sageGrad" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#3B5944" stop-opacity="0.3"></stop>
+<stop offset="50%" stop-color="#3B5944" stop-opacity="0.95"></stop>
+<stop offset="100%" stop-color="#3B5944" stop-opacity="0.3"></stop>
+</lineargradient>
+<lineargradient id="amberClayGrad" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#C87D55" stop-opacity="0.2"></stop>
+<stop offset="40%" stop-color="#C87D55" stop-opacity="0.85"></stop>
+<stop offset="100%" stop-color="#C87D55" stop-opacity="0.3"></stop>
+</lineargradient>
+</defs>
+<!-- Wild Sage Primary Ribbon -->
+<path d="M 0,20 C 20,6 40,34 70,18 C 100,2 120,38 150,14 C 180,-2 205,32 240,20 C 270,10 295,28 320,18" fill="none" stroke="url(#sageGrad)" stroke-linecap="round" stroke-width="2.2"></path>
+<!-- Warm Clay Secondary Ribbon -->
+<path d="M 0,24 C 25,32 50,8 85,26 C 115,40 140,4 175,22 C 210,38 230,6 265,16 C 290,24 305,14 320,22" fill="none" stroke="url(#amberClayGrad)" stroke-linecap="round" stroke-width="1.8"></path>
+</svg>
+<!-- Audio needle -->
+<div class="absolute left-[68%] top-0 bottom-0 w-[2px] bg-[#C87D55]"></div>
+</div>
+<!-- Playback scrubber and toggle -->
+<div class="flex items-center space-x-3">
+<button aria-label="Pause playback" class="w-8 h-8 rounded-full bg-[#3B5944] flex items-center justify-center text-[#F6F5F0]" type="button">
+<span class="material-symbols-outlined text-[18px]">pause</span>
+</button>
+<div class="flex-1 bg-[#D0CDC4] h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#3B5944] h-full w-[68%] rounded-full"></div>
+</div>
+<span class="font-meta-mono text-meta-mono text-[#585D56]">-0:18</span>
+</div>
+<!-- Transcription quote -->
+<div class="bg-[#EAE8E1] border border-[#CCC8BE]/80 rounded-lg p-3">
+<p class="font-quote-serif-italic text-quote-serif-italic text-[#181A18]">
+        “I keep thinking that if I pause for too long during the portfolio review, the panel will assume I didn't build the system myself...”
+      </p>
+</div>
+<!-- Metadata pill -->
+<div class="flex items-center justify-between text-[#585D56] pt-1">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-[14px]">cloud_download</span>
+<span class="font-meta-mono text-meta-mono">Captured 3 min ago</span>
+</div>
+<span class="font-meta-mono text-meta-mono text-[#3B5944] font-medium">Product Design Review</span>
+</div>
+</div>
+<!-- 3. Untangled Perspective (Dual Lens) -->
+<div class="flex flex-col space-y-3">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-[16px] text-[#585D56]">all_inclusive</span>
+<span class="font-meta-mono text-meta-mono uppercase tracking-wider text-[#585D56]">Untangled Perspective</span>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<!-- What Fear Says -->
+<div class="bg-[#E0DDD5] border border-[#C87D55] rounded-xl p-3.5 flex flex-col justify-between space-y-3">
+<div class="flex flex-col space-y-1.5">
+<div class="flex items-center space-x-1 text-[#C87D55]">
+<span class="material-symbols-outlined text-[14px]">psychology_alt</span>
+<span class="font-meta-mono text-[10px] font-semibold tracking-wider uppercase">What Fear Says</span>
+</div>
+<p class="font-quote-serif-italic text-[15px] leading-snug text-[#181A18]">
+            “Any silence means they think I'm unqualified.”
+          </p>
+</div>
+<div class="pt-2">
+<span class="inline-block bg-[#C87D55]/15 border border-[#C87D55]/40 px-2 py-0.5 rounded-full font-meta-mono text-[10px] text-[#C87D55] font-medium">
+            Anxiety Projection
+          </span>
+</div>
+</div>
+<!-- Grounded Truth -->
+<div class="bg-[#E0DDD5] border border-[#3B5944] rounded-xl p-3.5 flex flex-col justify-between space-y-3">
+<div class="flex flex-col space-y-1.5">
+<div class="flex items-center space-x-1 text-[#3B5944]">
+<span class="material-symbols-outlined text-[14px]">eco</span>
+<span class="font-meta-mono text-[10px] font-semibold tracking-wider uppercase">Grounded Truth</span>
+</div>
+<p class="font-body-md text-[13px] leading-snug text-[#181A18]">
+            Thoughtful pauses show composure. Nobody expects instant answers.
+          </p>
+</div>
+<div class="pt-2">
+<span class="inline-block bg-[#3B5944]/15 border border-[#3B5944]/40 px-2 py-0.5 rounded-full font-meta-mono text-[10px] text-[#3B5944] font-medium">
+            Calibrated Reality
+          </span>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. Grounding Anchor & Post-Event Reminder -->
+<div class="flex flex-col space-y-3">
+<!-- Physical Anchor Box -->
+<div class="bg-[#D8D5CC] border border-[#CCC8BE] rounded-xl p-4 flex flex-col space-y-2">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-[16px] text-[#3B5944]">spa</span>
+<span class="font-meta-mono text-meta-mono uppercase tracking-wider text-[#3B5944] font-medium">Physical Anchor</span>
+</div>
+<p class="font-body-md text-body-md text-[#181A18]">
+        Rest both hands flat on the desk before beginning your slide walkthrough. Feel the ground beneath you.
+      </p>
+</div>
+<!-- Gentle Post-Event Check-in -->
+<div class="bg-[#E0DDD5] border border-[#CCC8BE] rounded-xl p-4 flex items-center justify-between space-x-3">
+<div class="flex flex-col space-y-1">
+<span class="font-title-md text-[15px] text-[#181A18]">Gentle Post-Event Check-In</span>
+<span class="font-body-md text-[13px] leading-snug text-[#585D56]">Notify me 1 hour after the event to record how reality actually unfolded.</span>
+</div>
+<!-- Pill Toggle Switch -->
+<button aria-label="Toggle post-event check-in notification" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full bg-[#3B5944] p-0.5 transition-colors" type="button">
+<span class="translate-x-5 inline-block h-5 w-5 transform rounded-full bg-[#F6F5F0] shadow transition-transform"></span>
+</button>
+</div>
+</div>
+<!-- 5. Primary Action & Bottom Reassurance -->
+<div class="flex flex-col space-y-3 pt-2">
+<button class="w-full bg-[#3B5944] text-[#F6F5F0] font-headline-sans text-body-lg py-4 px-6 rounded-full flex items-center justify-center space-x-2 hover:bg-[#324b3a] active:scale-[0.99] transition-all shadow-sm" type="button">
+<span>Save to Open Threads</span>
+<span class="material-symbols-outlined text-[19px]">arrow_forward</span>
+</button>
+<p class="font-meta-mono text-meta-mono text-center text-[#585D56] px-4">
+      You are preparing your mind, not predicting catastrophe.
+    </p>
+</div>
+</div></main></body></html>

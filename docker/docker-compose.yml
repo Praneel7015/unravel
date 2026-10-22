@@ -1,0 +1,78 @@
+# Unravel — Turnkey Sovereign Self-Host Stack (`app.unravel.foss`)
+#
+# Provides:
+# 1. `unravel-webdav`: Hardened TLS/HTTPS WebDAV vault target for syncing
+#    client-side AES-256-GCM encrypted envelopes (`<= 16 KiB` each).
+# 2. `unravel-ollama` (optional profile `local-ai`): Air-gapped local LLM daemon
+#    bound strictly to loopback (`127.0.0.1:11434`) for Stoic worry untangling.
+#
+# Usage:
+#   cp .env.example .env
+#   docker compose up -d
+#   # Or with local Ollama AI:
+#   docker compose --profile local-ai up -d
+
+services:
+  unravel-webdav:
+    image: hacdias/webdav:v4.2.2
+    container_name: unravel-webdav
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    ports:
+      - "${WEBDAV_BIND_ADDRESS:-127.0.0.1}:${WEBDAV_PORT:-8443}:8080"
+    environment:
+      WD_ADDRESS: "0.0.0.0:8080"
+      WD_PREFIX: "/unravel-vault"
+      WD_PERMISSIONS: "CRUD"
+      WD_USERS_0_USERNAME: "${WEBDAV_USERNAME:?Set WEBDAV_USERNAME in .env}"
+      WD_USERS_0_PASSWORD: "${WEBDAV_PASSWORD_BCRYPT:?Set WEBDAV_PASSWORD_BCRYPT in .env}"
+    volumes:
+      - unravel_e2ee_vault:/data
+
+  unravel-tls-proxy:
+    image: caddy:2.8-alpine
+    container_name: unravel-tls-proxy
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    ports:
+      - "443:443"
+    environment:
+      UNRAVEL_VAULT_DOMAIN: "${UNRAVEL_VAULT_DOMAIN:-localhost}"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - unravel-webdav
+
+  unravel-ollama:
+    image: ollama/ollama:0.3.14
+    container_name: unravel-ollama
+    profiles:
+      - local-ai
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    # Bound strictly to loopback so local LLM is never exposed to the public internet
+    ports:
+      - "127.0.0.1:11434:11434"
+    environment:
+      OLLAMA_ORIGINS: "http://localhost:*"
+      OLLAMA_KEEP_ALIVE: "5m"
+    volumes:
+      - unravel_ollama_models:/root/.ollama
+
+volumes:
+  unravel_e2ee_vault:
+  unravel_ollama_models:
+  caddy_data:
+  caddy_config:

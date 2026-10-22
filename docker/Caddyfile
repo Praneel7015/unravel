@@ -1,0 +1,15 @@
+{$UNRAVEL_VAULT_DOMAIN:localhost} {
+  # Enforce strict 64 KiB request body ceiling on E2EE WebDAV vault envelopes
+  request_body {
+    max_size 64KB
+  }
+
+  header {
+    Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    -Server
+  }
+
+  reverse_proxy /unravel-vault* unravel-webdav:8080
+}

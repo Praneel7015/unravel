@@ -1,0 +1,21 @@
+name: unravel_sync_foss
+description: Air-gapped local-only mode, WebDAV/Nextcloud E2EE sync, Self-Hosted Server URL support, and BYOK (Local Ollama / OpenAI-compatible endpoint).
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  unravel_core:
+    path: ../core
+  http: ^1.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0

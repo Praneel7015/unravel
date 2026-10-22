@@ -1,0 +1,12 @@
+name: unravel
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+workspace:
+  - packages/core
+  - packages/sync_foss
+  - packages/sync_store
+  - apps/unravel_foss
+  - apps/unravel_store

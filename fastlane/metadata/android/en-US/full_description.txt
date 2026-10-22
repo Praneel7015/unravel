@@ -1,0 +1,21 @@
+Unravel is a quiet, circadian botanical field journal built around Stoic philosophy (Seneca and Epictetus's Dichotomy of Control) to help untangle anticipatory worry before important life moments and reflect on how reality actually unfolded afterward.
+
+Core Philosophy — Zero Toxic Gamification:
+• No day-streak counters, flame icons, leaderboards, or guilt-inducing notifications.
+• Open Threads ("Before a Moment"): Break down an upcoming moment into numbered worries separated into WITHIN MY CONTROL and BEYOND MY CONTROL, paired with a concrete somatic Physical Anchor.
+• Gentle Post-Event Check-In ("After a Moment"): A single, offline-scheduled local notification invites you after the event to record how reality unfolded without lock-screen privacy leaks.
+• The Perspective Curve: A dual smooth spline chart comparing "What Fear Predicted" against "How Life Unfolded" so your nervous system can see its own evidence over time.
+
+Circadian Botanical Design System:
+• Automatically shifts across 4 nature-inspired surface palettes throughout the day (or lets you choose manually):
+  1. Morning Mist (06:00–11:00 — Birch Paper Light)
+  2. High Sun (11:00–17:30 — Raw Limestone Neutral)
+  3. Dusk Pine (17:30–23:00 — Evening Nature Dark)
+  4. Midnight Starlight (23:00–06:00 — Pure #000000 OLED Black)
+• Bundled offline SIL Open Font License (OFL) typography (Newsreader, Plus Jakarta Sans, and JetBrains Mono) with runtime network font fetching disabled.
+
+Sovereign Privacy & 100% Air-Gapped FOSS Architecture (`app.unravel.foss`):
+• Local-first Drift SQLite storage with on-device AES-256-GCM envelope encryption and Argon2id key wrapping.
+• Ephemeral voice reflection pipeline that streams 30fps live waveform amplitude in RAM and immediately zero-fills audio buffers when finished.
+• Optional self-hosted WebDAV / Nextcloud encrypted sync and local Ollama (http://localhost:11434) or Bring-Your-Own-Key (BYOK) cognitive reframing.
+• Completely free of proprietary billing libraries, Firebase, Google Play Services, or telemetry.

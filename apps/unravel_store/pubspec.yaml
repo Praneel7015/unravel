@@ -1,0 +1,25 @@
+name: unravel_store
+description: Unravel (App Store & Google Play Edition) — E2EE Cloud Sync & Managed AI Relay via compile-time --dart-define injection.
+version: 0.1.0+1
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  unravel_core:
+    path: ../../packages/core
+  unravel_sync_store:
+    path: ../../packages/sync_store
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

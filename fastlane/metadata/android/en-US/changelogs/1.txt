@@ -1,0 +1,6 @@
+v0.1.0 (Birchwood Release)
+• Initial F-Droid libre release of Unravel (app.unravel.foss).
+• 4 Circadian botanical themes (Morning Mist, High Sun, Dusk Pine, Midnight Starlight OLED).
+• Open Threads (Before & After a Moment) and the Perspective Curve.
+• Client-side AES-256-GCM encryption + Argon2id key wrapping.
+• Offline local post-event check-in notifications, WebDAV sync, and local Ollama BYOK support.

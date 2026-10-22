@@ -1,0 +1,30 @@
+---
+description: Core architecture, F-Droid vs Store separation, E2EE security, and Socratic engineering rules for Unravel.
+globs: **/*
+alwaysApply: true
+---
+
+# Unravel — Architecture, Security & Anti-Vibecode Rules
+
+## 1. Socratic Partner Mandate
+- Do NOT blindly generate boilerplate or act as a "yes-man."
+- Before implementing a new module, critique the request for security loopholes, F-Droid scanner traps, UX friction, or surprise cloud cost risks.
+- Never use `// TODO` placeholders for security, encryption, or billing verification.
+
+## 2. Product Philosophy (Zero Toxic Gamification)
+- **No Streaks:** Never add day-streak counters, flame icons, or guilt-inducing notifications.
+- **Core Loop:** Built around **Open Threads** ("Before a Moment" worry untangling + scheduled gentle post-event check-in "After a Moment") and the **Perspective Curve** (What Fear Predicted vs. How Life Unfolded)[cite: 5, 8].
+
+## 3. Strict Dart Workspace Monorepo (F-Droid Purity)
+F-Droid's automated build scanner rejects apps if proprietary SDKs (Google Play Billing, RevenueCat, Firebase) exist anywhere in the dependency tree. We enforce strict package isolation:
+- `packages/core`: Shared UI, Circadian Theme Engine, local SQLite (`Drift`), client-side AES-256-GCM envelope encryption, and abstract interfaces[cite: 11].
+- `packages/sync_foss`: Local-only mode, WebDAV/Nextcloud sync, Self-Hosted Server URL support, and BYOK (Bring Your Own Key / Local Ollama URL)[cite: 11].
+- `packages/sync_store`: Managed Supabase Cloud Sync, RevenueCat/StoreKit/Play Billing (7-day trial + Pro tier), and Multi-Model Cloud Relay[cite: 11].
+- `apps/unravel_foss`: F-Droid entrypoint (`app.unravel.foss`). **CRITICAL:** Must contain ZERO hardcoded commercial cloud URLs or API keys in source control. Runs 100% air-gapped offline by default[cite: 11].
+- `apps/unravel_store`: App Store & Play Store entrypoint (`app.unravel.store`). Injects `CLOUD_URL` and `SB_PUBLISHABLE_KEY` strictly via `--dart-define` at build time.
+
+## 4. Zero-Bill-Shock & Security Hardening
+- **Free & FOSS Users Cost $0.00:** Free tier users and F-Droid users never touch our managed cloud database or LLM relay.
+- **Cryptographic Entitlement Gate:** Cloud Sync and the Multi-Model AI Relay (`POST /functions/v1/unravel-relay`) only execute when `profiles.tier IN ('trial', 'pro')` verified by server-side Apple/Google store webhooks.
+- **Hard Abuse Caps:** Enforce a strict cap of 15 total AI calls during a 7-day trial (`trial_ai_calls_remaining`), a daily atomic cap (`ai_calls_today <= 20`) for Pro users, `REVOKE ALL` on the `anon` Postgres role, and `CHECK (octet_length(encrypted_payload) <= 16384)` on all synced columns.
+- **End-to-End Encryption (E2EE):** Encrypt all reflection text, worries, and transcripts on-device using AES-256-GCM (Master Data Key wrapped via Argon2id) before upload[cite: 11]. Raw voice audio is never stored on servers.
