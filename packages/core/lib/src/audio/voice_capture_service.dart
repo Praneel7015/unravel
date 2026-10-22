@@ -23,7 +23,8 @@ class VoiceAmplitudeFrame {
     required this.rollingSamples,
   });
 
-  /// Normalized amplitude in `[0.0, 1.0]` mapped from `[-60.0 dBFS, 0.0 dBFS]`.
+  /// Normalized amplitude in `[0.0, 1.0]`. Near-mic speech sits close to `1.0`;
+  /// distant speech stays near `0.0`.
   final double normalizedAmplitude;
 
   /// Raw decibel reading relative to full scale (`-60.0 .. 0.0 dBFS`).
@@ -238,10 +239,22 @@ class EphemeralHardwareVoiceCaptureService implements VoiceCaptureService {
     return dbfs.clamp(-60.0, 0.0);
   }
 
-  /// Maps `[-60.0 dBFS, 0.0 dBFS]` linearly into `[0.0, 1.0]`.
+  /// Maps `[-48.0 dBFS, -12.0 dBFS]` through a steep curve into `[0.0, 1.0]`.
+  ///
+  /// A voice against the microphone (`-12 dBFS` and louder) fills the card.
+  /// A voice farther away (`-36 dBFS` and quieter) stays a small ripple.
+  /// Silence at the noise floor stays at `0.0`.
   @visibleForTesting
   static double normalizeDbfs(double dbfs) {
-    return ((dbfs.clamp(-60.0, 0.0) + 60.0) / 60.0).clamp(0.0, 1.0);
+    const double floorDbfs = -48.0;
+    const double fullDbfs = -12.0;
+    final double clamped = dbfs.clamp(-60.0, 0.0);
+    if (clamped <= floorDbfs) {
+      return 0.0;
+    }
+    final double lifted =
+        ((clamped - floorDbfs) / (fullDbfs - floorDbfs)).clamp(0.0, 1.0);
+    return math.pow(lifted, 1.35).toDouble();
   }
 
   @override
@@ -319,7 +332,7 @@ class EphemeralHardwareVoiceCaptureService implements VoiceCaptureService {
       ingestPcm16Frame(syntheticPcm);
     }
 
-    _rollingAmplitudes.add(_latestNormalizedAmplitude.clamp(0.05, 1.0));
+    _rollingAmplitudes.add(_latestNormalizedAmplitude.clamp(0.0, 1.0));
     if (_rollingAmplitudes.length > 24) {
       _rollingAmplitudes.removeAt(0);
     }

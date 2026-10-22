@@ -68,16 +68,15 @@ class _PerspectiveCurvePainter extends CustomPainter {
     _drawDashedHorizontalLine(canvas, size.width, size.height * 0.25, gridPaint);
     _drawDashedHorizontalLine(canvas, size.width, size.height * 0.65, gridPaint);
 
-    final List<double> fearScores = entries.isNotEmpty
-        ? entries
-            .map((PerspectiveCurveEntry e) => e.predictedFear.toDouble())
-            .toList()
-        : <double>[6, 9, 8, 6, 8];
-    final List<double> realityScores = entries.isNotEmpty
-        ? entries
-            .map((PerspectiveCurveEntry e) => e.actualOutcome.toDouble())
-            .toList()
-        : <double>[2, 2, 3, 2, 2];
+    final List<double> fearScores = entries
+        .map((PerspectiveCurveEntry e) => e.predictedFear.toDouble())
+        .toList();
+    final List<double> realityScores = entries
+        .map((PerspectiveCurveEntry e) => e.actualOutcome.toDouble())
+        .toList();
+    if (fearScores.isEmpty || realityScores.isEmpty) {
+      return;
+    }
 
     final List<Offset> fearPoints = _normalizeScores(fearScores, size);
     final List<Offset> realityPoints = _normalizeScores(realityScores, size);
@@ -224,7 +223,7 @@ class _PerspectiveCurvePainter extends CustomPainter {
 class OrganicVoiceWaveform extends StatelessWidget {
   const OrganicVoiceWaveform({
     required this.progress,
-    this.amplitude = 0.42,
+    this.amplitude = 0.0,
     this.rollingSamples = const <double>[],
     super.key,
   });
@@ -237,7 +236,7 @@ class OrganicVoiceWaveform extends StatelessWidget {
   Widget build(BuildContext context) {
     final UnravelThemeExtension ext = context.unravelTheme;
     return Container(
-      height: 52,
+      height: 104,
       width: double.infinity,
       decoration: BoxDecoration(
         color: ext.canvas,
@@ -286,102 +285,53 @@ class _OrganicWaveformPainter extends CustomPainter {
   final double amplitude;
   final List<double> rollingSamples;
 
-  double _sampleAt(int index, double fallback) {
-    if (rollingSamples.isEmpty) {
-      return fallback;
-    }
-    final int safeIndex = index % rollingSamples.length;
-    return rollingSamples[safeIndex].clamp(0.08, 1.0);
-  }
-
   @override
   void paint(Canvas canvas, Size size) {
-    final double w = size.width;
-    final double h = size.height;
-    final double midY = h / 2;
+    final double width = size.width;
+    final double height = size.height;
+    if (width <= 0 || height <= 0) {
+      return;
+    }
 
-    final double energy = (0.22 + amplitude * 0.78).clamp(0.18, 1.0);
-    final double s0 = _sampleAt(0, energy);
-    final double s1 = _sampleAt(6, energy * 0.9);
-    final double s2 = _sampleAt(12, energy);
-    final double s3 = _sampleAt(18, energy * 0.85);
+    const int barCount = 28;
+    final double slot = width / barCount;
+    final double barWidth = slot * 0.46;
+    final double midY = height / 2;
 
-    final double swingA = (h * 0.42) * s0;
-    final double swingB = (h * 0.45) * s1;
-    final double swingC = (h * 0.38) * s2;
-    final double swingD = (h * 0.36) * s3;
-
-    final Path primaryRibbon = Path()
-      ..moveTo(0, midY)
-      ..cubicTo(
-        w * 0.12,
-        midY - swingA,
-        w * 0.24,
-        midY + swingA,
-        w * 0.36,
-        midY * 0.94,
-      )
-      ..cubicTo(
-        w * 0.48,
-        midY - swingB,
-        w * 0.62,
-        midY + swingB,
-        w * 0.74,
-        midY,
-      )
-      ..cubicTo(
-        w * 0.86,
-        midY - swingC,
-        w * 0.94,
-        midY + swingC,
-        w,
-        midY * 0.95,
+    for (int i = 0; i < barCount; i++) {
+      final double level = _levelAt(i, barCount);
+      final double halfHeight = height * 0.48 * level;
+      final double drawnHalf = halfHeight < 0.75 ? 0.75 : halfHeight;
+      final double left = slot * i + (slot - barWidth) / 2;
+      final RRect bar = RRect.fromRectAndRadius(
+        Rect.fromCenter(
+          center: Offset(left + barWidth / 2, midY),
+          width: barWidth,
+          height: drawnHalf * 2,
+        ),
+        Radius.circular(barWidth),
       );
-
-    final Path secondaryRibbon = Path()
-      ..moveTo(0, midY * 1.06)
-      ..cubicTo(
-        w * 0.15,
-        midY + swingD,
-        w * 0.28,
-        midY - swingD,
-        w * 0.42,
-        midY * 1.06,
-      )
-      ..cubicTo(
-        w * 0.56,
-        midY + swingB * 0.85,
-        w * 0.68,
-        midY - swingB * 0.85,
-        w * 0.82,
-        midY * 0.90,
-      )
-      ..cubicTo(
-        w * 0.90,
-        midY + swingA * 0.65,
-        w * 0.96,
-        midY - swingA * 0.65,
-        w,
-        midY * 1.04,
+      final bool accent = i.isEven;
+      final double alpha = level < 0.02 ? 0.28 : (0.45 + 0.55 * level);
+      canvas.drawRRect(
+        bar,
+        Paint()
+          ..color = (accent ? primaryColor : secondaryColor)
+              .withValues(alpha: alpha.clamp(0.0, 1.0)),
       );
+    }
+  }
 
-    canvas.drawPath(
-      primaryRibbon,
-      Paint()
-        ..color = primaryColor
-        ..strokeWidth = 2.2
-        ..strokeCap = StrokeCap.round
-        ..style = PaintingStyle.stroke,
-    );
-
-    canvas.drawPath(
-      secondaryRibbon,
-      Paint()
-        ..color = secondaryColor.withValues(alpha: 0.82)
-        ..strokeWidth = 1.8
-        ..strokeCap = StrokeCap.round
-        ..style = PaintingStyle.stroke,
-    );
+  double _levelAt(int index, int barCount) {
+    if (rollingSamples.isEmpty) {
+      return amplitude.clamp(0.0, 1.0);
+    }
+    final int sampleIndex = rollingSamples.length == 1
+        ? 0
+        : ((index / (barCount - 1)) * (rollingSamples.length - 1))
+            .round()
+            .clamp(0, rollingSamples.length - 1);
+    return rollingSamples[sampleIndex].clamp(0.0, 1.0);
   }
 
   @override
