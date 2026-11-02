@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dusk-pine">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security — Unravel</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="sticky-bar" role="banner">
+    <div class="container bar-inner">
+      <a href="index.html" class="brand-lockup" aria-label="Unravel Home">
+        <span class="brand-serif">Unravel</span>
+        <span class="brand-tag mono">SECURITY</span>
+      </a>
+    </div>
+  </header>
+  <main class="container" style="padding-top: 48px; padding-bottom: 64px; max-width: 40rem;">
+    <h1 class="display-serif">Security</h1>
+    <p class="hero-lead">Reflections are encrypted on the phone with AES-256-GCM before they are written. The key is wrapped with Argon2id and the passphrase you choose.</p>
+    <p>The recording of a spoken worry is held in memory only long enough to write the words. Every byte of that audio is then cleared.</p>
+    <p>A journal file is encrypted with the same key. The wrong passphrase writes nothing. A file marked by the store app is refused by the open-source app before it is decrypted.</p>
+    <p>A WebDAV password, a model address, and a cloud account are not written into the journal file.</p>
+    <p><a href="privacy.html">Privacy</a> · <a href="index.html">Home</a></p>
+  </main>
+</body>
+</html>

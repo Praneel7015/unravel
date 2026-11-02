@@ -10,14 +10,30 @@ class JournalVaultRecord {
   const JournalVaultRecord({
     required this.setupComplete,
     required this.wrappedKey,
+    this.byokEndpointOrKey = '',
+    this.webdavUrl = '',
+    this.webdavUsername = '',
+    this.webdavPassword = '',
   });
 
   final bool setupComplete;
   final WrappedMasterKeyBundle? wrappedKey;
 
+  /// A local model address or a key the person already holds. Never uploaded.
+  final String byokEndpointOrKey;
+
+  /// Self-host WebDAV address, name, and password. Empty until typed.
+  final String webdavUrl;
+  final String webdavUsername;
+  final String webdavPassword;
+
   Map<String, Object?> toJson() => <String, Object?>{
         'setupComplete': setupComplete,
         'wrappedKey': wrappedKey?.toJson(),
+        'byokEndpointOrKey': byokEndpointOrKey,
+        'webdavUrl': webdavUrl,
+        'webdavUsername': webdavUsername,
+        'webdavPassword': webdavPassword,
       };
 
   factory JournalVaultRecord.fromJson(Map<String, Object?> json) {
@@ -32,6 +48,10 @@ class JournalVaultRecord {
               ),
             )
           : null,
+      byokEndpointOrKey: json['byokEndpointOrKey'] as String? ?? '',
+      webdavUrl: json['webdavUrl'] as String? ?? '',
+      webdavUsername: json['webdavUsername'] as String? ?? '',
+      webdavPassword: json['webdavPassword'] as String? ?? '',
     );
   }
 }

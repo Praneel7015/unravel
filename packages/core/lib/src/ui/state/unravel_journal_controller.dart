@@ -48,6 +48,7 @@ class UnravelJournalController extends ChangeNotifier {
     UnravelDatabase? database,
     JournalVaultStore? vaultStore,
     DateTime Function()? clock,
+    this.publicSiteOrigin = '',
   })  : _themePreference = initialThemePreference,
         _encryptionService = encryptionService ?? EnvelopeEncryptionService(),
         notificationService =
@@ -71,6 +72,9 @@ class UnravelJournalController extends ChangeNotifier {
 
   final UnravelSyncEngine syncEngine;
   final bool isFossBuild;
+
+  /// Empty until `PUBLIC_SITE_ORIGIN` is set at build time.
+  final String publicSiteOrigin;
   final EnvelopeEncryptionService _encryptionService;
   final LocalCheckInNotificationService notificationService;
   final VoiceCaptureService voiceCaptureService;
@@ -82,6 +86,9 @@ class UnravelJournalController extends ChangeNotifier {
   StorageArchitectureMode _storageMode;
   IntelligenceRoutingMode _intelligenceMode;
   String _byokEndpointOrKey = '';
+  String _webdavUrl = '';
+  String _webdavUsername = '';
+  String _webdavPassword = '';
   SecretKey? _masterDataKey;
   WrappedMasterKeyBundle? _wrappedKey;
   bool _setupComplete;
@@ -98,6 +105,9 @@ class UnravelJournalController extends ChangeNotifier {
   StorageArchitectureMode get storageMode => _storageMode;
   IntelligenceRoutingMode get intelligenceMode => _intelligenceMode;
   String get byokEndpointOrKey => _byokEndpointOrKey;
+  String get webdavUrl => _webdavUrl;
+  String get webdavUsername => _webdavUsername;
+  String get webdavPassword => _webdavPassword;
   bool get setupComplete => _setupComplete;
   bool get vaultReady => _vaultReady;
   bool get needsUnlock => _needsUnlock;
@@ -208,10 +218,59 @@ class UnravelJournalController extends ChangeNotifier {
   }
 
   void setByokEndpointOrKey(String value) {
-    if (value.trim().isNotEmpty) {
-      _byokEndpointOrKey = value.trim();
-      notifyListeners();
+    _byokEndpointOrKey = value.trim();
+    notifyListeners();
+    unawaited(_persistLocalSettings());
+  }
+
+  void setWebdavUrl(String value) {
+    _webdavUrl = value.trim();
+    notifyListeners();
+    unawaited(_persistLocalSettings());
+  }
+
+  void setWebdavUsername(String value) {
+    _webdavUsername = value.trim();
+    notifyListeners();
+    unawaited(_persistLocalSettings());
+  }
+
+  void setWebdavPassword(String value) {
+    _webdavPassword = value;
+    notifyListeners();
+    unawaited(_persistLocalSettings());
+  }
+
+  /// A public page such as `privacy.html`, or null when no site address is set.
+  String? publicPageUrl(String page) {
+    final String origin = publicSiteOrigin.trim();
+    if (origin.isEmpty) {
+      return null;
     }
+    final String base = origin.endsWith('/')
+        ? origin.substring(0, origin.length - 1)
+        : origin;
+    return '$base/$page';
+  }
+
+  JournalVaultRecord _vaultRecord({required bool setupComplete}) {
+    return JournalVaultRecord(
+      setupComplete: setupComplete,
+      wrappedKey: _wrappedKey,
+      byokEndpointOrKey: _byokEndpointOrKey,
+      webdavUrl: _webdavUrl,
+      webdavUsername: _webdavUsername,
+      webdavPassword: _webdavPassword,
+    );
+  }
+
+  Future<void> _persistLocalSettings() async {
+    final WrappedMasterKeyBundle? wrapped = _wrappedKey;
+    final JournalVaultStore? vault = _vault;
+    if (wrapped == null || vault == null) {
+      return;
+    }
+    await vault.write(_vaultRecord(setupComplete: _setupComplete));
   }
 
   /// Encrypts and adds a new "Before a Moment" [OpenThreadRecord] using
@@ -285,8 +344,9 @@ class UnravelJournalController extends ChangeNotifier {
     if (_database != null) {
       try {
         await _database.into(_database.openThreads).insert(record);
-      } catch (_) {
-        // The in-memory journal still holds the thread if the local write fails.
+      } catch (error) {
+        _openThreads.remove(record);
+        throw StateError('This phone could not store the moment. $error');
       }
     }
 
@@ -416,6 +476,10 @@ class UnravelJournalController extends ChangeNotifier {
 
     _masterDataKey = null;
     _wrappedKey = null;
+    _byokEndpointOrKey = '';
+    _webdavUrl = '';
+    _webdavUsername = '';
+    _webdavPassword = '';
     if (_vault != null) {
       await _vault.clear();
       _setupComplete = false;
@@ -491,6 +555,10 @@ class UnravelJournalController extends ChangeNotifier {
     try {
       final JournalVaultRecord? record = await vault.read();
       _wrappedKey = record?.wrappedKey;
+      _byokEndpointOrKey = record?.byokEndpointOrKey ?? '';
+      _webdavUrl = record?.webdavUrl ?? '';
+      _webdavUsername = record?.webdavUsername ?? '';
+      _webdavPassword = record?.webdavPassword ?? '';
       _setupComplete = record?.setupComplete == true && _wrappedKey != null;
       _needsUnlock = _setupComplete && _masterDataKey == null;
     } catch (_) {
@@ -511,9 +579,7 @@ class UnravelJournalController extends ChangeNotifier {
     _masterDataKey = key;
     _wrappedKey = wrapped;
     _needsUnlock = false;
-    await _vault?.write(
-      JournalVaultRecord(setupComplete: false, wrappedKey: wrapped),
-    );
+    await _vault?.write(_vaultRecord(setupComplete: false));
     notifyListeners();
   }
 
@@ -525,9 +591,7 @@ class UnravelJournalController extends ChangeNotifier {
     }
     _setupComplete = true;
     _needsUnlock = false;
-    await _vault?.write(
-      JournalVaultRecord(setupComplete: true, wrappedKey: wrapped),
-    );
+    await _vault?.write(_vaultRecord(setupComplete: true));
     notifyListeners();
   }
 

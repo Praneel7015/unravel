@@ -1041,6 +1041,20 @@ body {
   font-size: 0.82rem;
 }
 
+.footer-legal {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  margin-top: 18px;
+}
+
+.footer-legal a {
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
 .mark-link svg {
   width: 15px;
   height: 15px;

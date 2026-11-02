@@ -36,6 +36,16 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
+    androidResources {
+        noCompress += listOf("mdl", "fst", "dubm", "ie", "mat", "stats", "int")
+    }
 }
 
 kotlin {
@@ -51,4 +61,7 @@ flutter {
 dependencies {
     // Required by flutter_local_notifications for java.time on older Android.
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // Offline English speech. Audio stays in memory and is wiped after the words are written.
+    implementation("com.alphacephei:vosk-android:0.3.75@aar")
+    implementation("net.java.dev.jna:jna:5.18.1@aar")
 }

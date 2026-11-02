@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Flat moss leaf. The adaptive icon uses this vector on the moss background.
+  Your own art replaces these files, then rebuild:
+  drawable/ic_launcher_foreground.xml
+  mipmap-mdpi/ic_launcher.png            48 px
+  mipmap-hdpi/ic_launcher.png            72 px
+  mipmap-xhdpi/ic_launcher.png           96 px
+  mipmap-xxhdpi/ic_launcher.png          144 px
+  mipmap-xxxhdpi/ic_launcher.png         192 px
+  mipmap-mdpi/ic_launcher_foreground.png 108 px
+  mipmap-hdpi/ic_launcher_foreground.png 162 px
+  mipmap-xhdpi/ic_launcher_foreground.png 216 px
+  mipmap-xxhdpi/ic_launcher_foreground.png 324 px
+  mipmap-xxxhdpi/ic_launcher_foreground.png 432 px
+  A square PNG with the leaf centered and padding around it is enough.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#E8E6DF"
+        android:pathData="M54,30 C66,42 74,54 70,72 C60,80 48,80 38,72 C34,54 42,42 54,30 Z" />
+    <path
+        android:fillColor="#3B5944"
+        android:pathData="M53,40 L55,40 L55,74 L53,74 Z" />
+</vector>

@@ -473,6 +473,10 @@ void main() {
         await tester.scrollUntilVisible(
           find.text('Purge Vault & Delete Cloud Account'),
           200,
+          scrollable: find.descendant(
+            of: find.byType(SanctuaryScreen),
+            matching: find.byType(Scrollable),
+          ).first,
         );
         await tester.tap(find.text('Purge Vault & Delete Cloud Account'));
         await tester.pumpAndSettle();

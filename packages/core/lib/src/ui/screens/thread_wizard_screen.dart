@@ -111,9 +111,11 @@ class _ThreadWizardScreenState extends State<ThreadWizardScreen> {
         _listening = false;
         _amplitude = 0;
         _samples = const <double>[];
-        _transcript = result.transcript.trim().isEmpty ? _transcript : result.transcript.trim();
-        if (_worry.text.trim().isEmpty && _transcript != null) {
-          _worry.text = _transcript!;
+        final String spoken = result.transcript.trim();
+        _transcript = spoken.isEmpty ? _transcript : spoken;
+        if (spoken.isNotEmpty) {
+          final String written = _worry.text.trim();
+          _worry.text = written.isEmpty ? spoken : '$written\n$spoken';
         }
       });
       return;
@@ -175,18 +177,22 @@ class _ThreadWizardScreenState extends State<ThreadWizardScreen> {
           _error = error.message?.toString() ?? 'Check the fields and save again.';
         });
       }
-    } on UnravelCryptoException {
+    } on UnravelCryptoException catch (error) {
       if (mounted) {
         setState(() {
           _saving = false;
-          _error = 'That spoken note is too long to keep. Shorten it and save again.';
+          _error = error.message.contains('16384')
+              ? 'That spoken note is too long to keep. Shorten it and save again.'
+              : error.message;
         });
       }
-    } catch (_) {
+    } catch (error) {
       if (mounted) {
         setState(() {
           _saving = false;
-          _error = 'This thread could not be kept. Try Save again.';
+          _error = error
+              .toString()
+              .replaceFirst(RegExp(r'^[A-Za-z][A-Za-z .]*: '), '');
         });
       }
     }
@@ -198,6 +204,7 @@ class _ThreadWizardScreenState extends State<ThreadWizardScreen> {
     final UnravelTypography typo = UnravelTypography.fromExtension(ext);
     return Scaffold(
       backgroundColor: ext.canvas,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
@@ -226,7 +233,12 @@ class _ThreadWizardScreenState extends State<ThreadWizardScreen> {
               ),
               Text(_titles[_step], style: typo.displaySerif),
               const SizedBox(height: 18),
-              Expanded(child: _stepBody(ext, typo)),
+              Expanded(
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: _stepBody(ext, typo),
+                ),
+              ),
               if (_error != null) ...<Widget>[
                 const SizedBox(height: 8),
                 Text(
@@ -299,7 +311,8 @@ class _ThreadWizardScreenState extends State<ThreadWizardScreen> {
           ),
         );
       case 2:
-        return ListView(
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextField(
               controller: _worry,

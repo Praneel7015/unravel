@@ -381,8 +381,7 @@ class EphemeralHardwareVoiceCaptureService implements VoiceCaptureService {
 
     int shreddedBytes = 0;
     int shreddedFiles = 0;
-    String resolvedTranscript = _pendingOnDeviceTranscript ??
-        'I keep thinking that if I pause for too long during the portfolio review, the panel will assume I did not build the system myself.';
+    String resolvedTranscript = _pendingOnDeviceTranscript?.trim() ?? '';
 
     try {
       await _nativePcmSubscription?.cancel();

@@ -116,7 +116,11 @@ class _SetupFlowState extends State<SetupFlow> {
                 style: typo.metaMono,
               ),
               const SizedBox(height: 18),
-              Expanded(child: _body(ext, typo)),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: _body(ext, typo),
+                ),
+              ),
               if (_error != null) ...<Widget>[
                 Text(_error!, style: typo.bodyMedium.copyWith(color: ext.terracottaAccent)),
                 const SizedBox(height: 12),
@@ -134,8 +138,8 @@ class _SetupFlowState extends State<SetupFlow> {
       case 0:
         return _copy(
           typo,
-          'A field journal for one moment',
-          'Unravel holds a worry before something happens, then asks how it actually went. There are no streaks and no score to protect.',
+          'Welcome to Unravel',
+          'A journal for a single upcoming moment, before it happens and after it has passed.',
         );
       case 1:
         return Column(

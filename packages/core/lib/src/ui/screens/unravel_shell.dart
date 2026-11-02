@@ -23,6 +23,7 @@ class UnravelApp extends StatefulWidget {
     required this.isFossBuild,
     this.initialThemePreference = CircadianThemePreference.circadianAuto,
     this.controller,
+    this.publicSiteOrigin = '',
     super.key,
   });
 
@@ -30,6 +31,9 @@ class UnravelApp extends StatefulWidget {
   final bool isFossBuild;
   final CircadianThemePreference initialThemePreference;
   final UnravelJournalController? controller;
+
+  /// Empty until `--dart-define=PUBLIC_SITE_ORIGIN=` names a real host.
+  final String publicSiteOrigin;
 
   @override
   State<UnravelApp> createState() => _UnravelAppState();
@@ -42,7 +46,12 @@ class _UnravelAppState extends State<UnravelApp> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    // Hide the phone navigation bar and leave room for the keyboard.
+    // immersiveSticky keeps the keyboard from sitting above a text field.
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: const <SystemUiOverlay>[SystemUiOverlay.top],
+    );
     if (widget.controller != null) {
       _controller = widget.controller!;
       _ownsController = false;
@@ -52,6 +61,7 @@ class _UnravelAppState extends State<UnravelApp> {
         isFossBuild: widget.isFossBuild,
         initialThemePreference: widget.initialThemePreference,
         database: UnravelDatabase(),
+        publicSiteOrigin: widget.publicSiteOrigin,
       );
       _ownsController = true;
     }

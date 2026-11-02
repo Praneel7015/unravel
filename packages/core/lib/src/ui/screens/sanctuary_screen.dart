@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../crypto/envelope_encryption_service.dart';
 import '../../journal/journal_archive.dart';
@@ -13,6 +14,7 @@ import '../../theme/unravel_theme.dart';
 import '../../theme/unravel_theme_extension.dart';
 import '../../theme/unravel_typography.dart';
 import '../state/unravel_journal_controller.dart';
+import 'legal_notice_screen.dart';
 
 /// Unravel Sanctuary (Themes & Sovereign Settings) screen.
 ///
@@ -69,6 +71,32 @@ class SanctuaryScreen extends StatelessWidget {
       SnackBar(
         backgroundColor: ext.card,
         content: Text(message, style: typo.bodyMedium.copyWith(color: ext.textPrimary)),
+      ),
+    );
+  }
+
+  Future<void> _openLegal(
+    BuildContext context, {
+    required String title,
+    required String page,
+    required List<String> paragraphs,
+  }) async {
+    final String? url = controller.publicPageUrl(page);
+    if (url != null) {
+      final Uri uri = Uri.parse(url);
+      if (await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        return;
+      }
+    }
+    if (!context.mounted) {
+      return;
+    }
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext _) => LegalNoticeScreen(
+          title: title,
+          paragraphs: paragraphs,
+        ),
       ),
     );
   }
@@ -604,6 +632,36 @@ class SanctuaryScreen extends StatelessWidget {
                         ],
                       ),
                     ),
+                    if (controller.storageMode ==
+                        StorageArchitectureMode.selfHostWebDav) ...<Widget>[
+                      const SizedBox(height: 14),
+                      Text('Self-host address', style: typo.settingTitleSans),
+                      const SizedBox(height: 4),
+                      Text(
+                        'A WebDAV address, name, and password. Empty until you type them. Nothing here creates a cloud account.',
+                        softWrap: true,
+                        style: typo.bodyMedium,
+                      ),
+                      const SizedBox(height: 12),
+                      _RememberedField(
+                        label: 'WebDAV address',
+                        value: controller.webdavUrl,
+                        onCommit: controller.setWebdavUrl,
+                      ),
+                      const SizedBox(height: 8),
+                      _RememberedField(
+                        label: 'Name',
+                        value: controller.webdavUsername,
+                        onCommit: controller.setWebdavUsername,
+                      ),
+                      const SizedBox(height: 8),
+                      _RememberedField(
+                        label: 'Password',
+                        value: controller.webdavPassword,
+                        obscure: true,
+                        onCommit: controller.setWebdavPassword,
+                      ),
+                    ],
                     const SizedBox(height: 14),
 
                     // Security Status Box (Wraps cleanly without `...` ellipses!)
@@ -795,14 +853,43 @@ class SanctuaryScreen extends StatelessWidget {
                     _IntelligenceOptionTile(
                       title: 'Bring Your Own Key or Local Daemon',
                       description:
-                          'Connect directly via personal API key or air-gapped local Ollama server (http://localhost:11434).',
+                          'A local model address, or a key you already hold. It stays on this phone and starts empty.',
                       isSelected: controller.intelligenceMode ==
                           IntelligenceRoutingMode.byokOrLocalDaemon,
                       onTap: () => controller.setIntelligenceMode(
                         IntelligenceRoutingMode.byokOrLocalDaemon,
                       ),
                     ),
+                    const SizedBox(height: 14),
+                    Text('Model address or key', style: typo.settingTitleSans),
+                    const SizedBox(height: 8),
+                    _RememberedField(
+                      label: 'Model address or key',
+                      hint: 'Stays on this phone',
+                      value: controller.byokEndpointOrKey,
+                      onCommit: controller.setByokEndpointOrKey,
+                    ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              _LegalRow(
+                title: 'Privacy',
+                onTap: () => _openLegal(
+                  context,
+                  title: 'Privacy',
+                  page: 'privacy.html',
+                  paragraphs: LegalNoticeScreen.privacy,
+                ),
+              ),
+              const SizedBox(height: 10),
+              _LegalRow(
+                title: 'Security',
+                onTap: () => _openLegal(
+                  context,
+                  title: 'Security',
+                  page: 'security.html',
+                  paragraphs: LegalNoticeScreen.security,
                 ),
               ),
               const SizedBox(height: UnravelTheme.sectionGap),
@@ -1104,6 +1191,104 @@ class _IntelligenceOptionTile extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RememberedField extends StatefulWidget {
+  const _RememberedField({
+    required this.label,
+    required this.value,
+    required this.onCommit,
+    this.hint,
+    this.obscure = false,
+  });
+
+  final String label;
+  final String value;
+  final ValueChanged<String> onCommit;
+  final String? hint;
+  final bool obscure;
+
+  @override
+  State<_RememberedField> createState() => _RememberedFieldState();
+}
+
+class _RememberedFieldState extends State<_RememberedField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.value);
+  }
+
+  @override
+  void didUpdateWidget(covariant _RememberedField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.value != oldWidget.value && widget.value != _controller.text) {
+      _controller.text = widget.value;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final UnravelTypography typo = UnravelTypography.fromExtension(
+      context.unravelTheme,
+    );
+    return TextField(
+      controller: _controller,
+      obscureText: widget.obscure,
+      style: typo.bodyLarge,
+      onChanged: widget.onCommit,
+      decoration: InputDecoration(
+        labelText: widget.label,
+        hintText: widget.hint,
+      ),
+    );
+  }
+}
+
+class _LegalRow extends StatelessWidget {
+  const _LegalRow({
+    required this.title,
+    required this.onTap,
+  });
+
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final UnravelThemeExtension ext = context.unravelTheme;
+    final UnravelTypography typo = UnravelTypography.fromExtension(ext);
+    return Material(
+      color: ext.card,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(UnravelTheme.cardRadius),
+        side: BorderSide(color: ext.border),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(UnravelTheme.cardRadius),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(title, softWrap: true, style: typo.settingTitleSans),
+              ),
+              Icon(Icons.chevron_right, color: ext.textMuted),
+            ],
+          ),
         ),
       ),
     );

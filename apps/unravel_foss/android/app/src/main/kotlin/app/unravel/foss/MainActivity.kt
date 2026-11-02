@@ -12,6 +12,12 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
+import org.json.JSONObject
+import org.vosk.Model
+import org.vosk.Recognizer
+import java.io.File
+import java.io.FileOutputStream
+import java.util.ArrayList
 import java.util.Arrays
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
@@ -26,19 +32,25 @@ import kotlin.concurrent.thread
  *
  * Zero Persistent Audio Disk Leaks:
  * Audio frames are read into a small RAM buffer, dispatched to Flutter for 30fps
- * waveform rendering, and zero-filled (`Arrays.fill(buffer, 0)`) immediately on stop.
+ * waveform rendering. On stop, those words are written from an on-device
+ * Vosk model, then every captured byte is zero-filled. The recording is not stored.
  */
 class MainActivity : FlutterActivity() {
     private val controlChannelName = "app.unravel.audio/control"
     private val pcmStreamChannelName = "app.unravel.audio/pcm_stream"
     private val recordPermissionRequestCode = 4101
+    private val modelAssetName = "vosk-model-small-en-us-0.15"
+    private val maxCapturedBytes = 16000 * 2 * 60
 
     private val isCapturing = AtomicBoolean(false)
+    private val pcmLock = Any()
+    private val capturedFrames = ArrayList<ByteArray>()
     private var audioRecord: AudioRecord? = null
     private var eventSink: EventChannel.EventSink? = null
     private val mainHandler = Handler(Looper.getMainLooper())
     private var pendingCaptureResult: MethodChannel.Result? = null
     private var pendingSampleRate: Int = 16000
+    @Volatile private var speechModel: Model? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -67,7 +79,13 @@ class MainActivity : FlutterActivity() {
                 }
                 "stopPcmCaptureAndTranscribe" -> {
                     stopAndShredAudioRecord()
-                    result.success(null)
+                    thread(name = "UnravelOnDeviceSpeech") {
+                        Thread.sleep(80)
+                        val pcm = takeCapturedPcm()
+                        val text = transcribe(pcm)
+                        Arrays.fill(pcm, 0.toByte())
+                        mainHandler.post { result.success(text) }
+                    }
                 }
                 else -> result.notImplemented()
             }
@@ -143,6 +161,12 @@ class MainActivity : FlutterActivity() {
 
         audioRecord = recorder
         isCapturing.set(true)
+        synchronized(pcmLock) {
+            for (frame in capturedFrames) {
+                Arrays.fill(frame, 0.toByte())
+            }
+            capturedFrames.clear()
+        }
         recorder.startRecording()
         result.success(null)
 
@@ -153,6 +177,7 @@ class MainActivity : FlutterActivity() {
                     val readBytes = recorder.read(frameBuffer, 0, frameBuffer.size)
                     if (readBytes > 0) {
                         val copyForUi = frameBuffer.copyOf(readBytes)
+                        rememberPcm(frameBuffer.copyOf(readBytes))
                         mainHandler.post {
                             eventSink?.success(copyForUi)
                         }
@@ -178,8 +203,114 @@ class MainActivity : FlutterActivity() {
         audioRecord = null
     }
 
+    private fun rememberPcm(frame: ByteArray) {
+        synchronized(pcmLock) {
+            var used = 0
+            for (existing in capturedFrames) {
+                used += existing.size
+            }
+            if (used >= maxCapturedBytes) {
+                Arrays.fill(frame, 0.toByte())
+                return
+            }
+            val keep = minOf(frame.size, maxCapturedBytes - used)
+            if (keep == frame.size) {
+                capturedFrames.add(frame)
+            } else {
+                capturedFrames.add(frame.copyOf(keep))
+                Arrays.fill(frame, 0.toByte())
+            }
+        }
+    }
+
+    private fun takeCapturedPcm(): ByteArray {
+        synchronized(pcmLock) {
+            var size = 0
+            for (frame in capturedFrames) {
+                size += frame.size
+            }
+            val pcm = ByteArray(size)
+            var offset = 0
+            for (frame in capturedFrames) {
+                frame.copyInto(pcm, offset)
+                Arrays.fill(frame, 0.toByte())
+                offset += frame.size
+            }
+            capturedFrames.clear()
+            return pcm
+        }
+    }
+
+    private fun transcribe(pcm: ByteArray): String? {
+        if (pcm.isEmpty()) {
+            return null
+        }
+        val model = try {
+            ensureSpeechModel()
+        } catch (_: Exception) {
+            null
+        } ?: return null
+        val recognizer = Recognizer(model, 16000.0f)
+        try {
+            var offset = 0
+            while (offset < pcm.size) {
+                val length = minOf(8000, pcm.size - offset)
+                val slice = pcm.copyOfRange(offset, offset + length)
+                recognizer.acceptWaveForm(slice, slice.size)
+                Arrays.fill(slice, 0.toByte())
+                offset += length
+            }
+            val text = JSONObject(recognizer.finalResult).optString("text").trim()
+            return text.ifEmpty { null }
+        } catch (_: Exception) {
+            return null
+        } finally {
+            recognizer.close()
+        }
+    }
+
+    private fun ensureSpeechModel(): Model? {
+        speechModel?.let { return it }
+        val dir = File(filesDir, modelAssetName)
+        val marker = File(dir, "am/final.mdl")
+        if (!marker.exists()) {
+            if (assets.list(modelAssetName).isNullOrEmpty()) {
+                return null
+            }
+            copyAssetFolder(modelAssetName, dir)
+        }
+        if (!marker.exists()) {
+            return null
+        }
+        val loaded = Model(dir.absolutePath)
+        speechModel = loaded
+        return loaded
+    }
+
+    private fun copyAssetFolder(assetPath: String, dest: File) {
+        val children = assets.list(assetPath)
+        if (children.isNullOrEmpty()) {
+            dest.parentFile?.mkdirs()
+            assets.open(assetPath).use { input ->
+                FileOutputStream(dest).use { output -> input.copyTo(output) }
+            }
+            return
+        }
+        dest.mkdirs()
+        for (child in children) {
+            copyAssetFolder("$assetPath/$child", File(dest, child))
+        }
+    }
+
     override fun onDestroy() {
         stopAndShredAudioRecord()
+        val leftover = takeCapturedPcm()
+        Arrays.fill(leftover, 0.toByte())
+        try {
+            speechModel?.close()
+        } catch (_: Exception) {
+        }
+        speechModel = null
         super.onDestroy()
     }
 }
