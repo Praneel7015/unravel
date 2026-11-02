@@ -1,0 +1,76 @@
+name: Release Please
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Release PR & tag
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      pr: ${{ steps.release.outputs.pr }}
+    steps:
+      - name: Run Release Please
+        id: release
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          # A PAT or GitHub App token lets CI run on the release PR;
+          # PRs opened with the default GITHUB_TOKEN don't trigger workflows.
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  # Release Please bumps the root pubspec.yaml; the apps ship from their own
+  # pubspecs, so copy the version (and incremented +build code) into them.
+  sync-app-versions:
+    name: Sync app versions on the release PR
+    needs: release-please
+    if: needs.release-please.outputs.pr != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout release PR branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ fromJSON(needs.release-please.outputs.pr).headBranchName }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || github.token }}
+
+      - name: Copy root version into app pubspecs
+        run: |
+          set -euo pipefail
+          version_line="$(grep -E '^version:' pubspec.yaml)"
+          for app in apps/unravel_foss apps/unravel_store; do
+            sed -i -E "s/^version:.*$/${version_line}/" "$app/pubspec.yaml"
+          done
+          if git diff --quiet; then
+            echo "App versions already match: ${version_line}"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore: sync app versions (${version_line#version: })"
+          git push
+
+  release-foss-apk:
+    name: Publish FOSS APK
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    permissions:
+      contents: write
+    uses: ./.github/workflows/release_foss.yml
