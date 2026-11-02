@@ -236,19 +236,34 @@ class FossByokAiRelay implements UnravelAiRelay {
     }
 
     final Object? decoded = jsonDecode(response.body);
-    if (decoded is! Map<String, Object?>) {
+    if (decoded is! Map) {
       throw const UnravelSchemaValidationException(
         'Expected JSON object from local/BYOK model.',
       );
     }
 
+    Map<String, Object?> asObjectMap(Map<dynamic, dynamic> raw) {
+      return <String, Object?>{
+        for (final MapEntry<dynamic, dynamic> entry in raw.entries)
+          entry.key.toString(): entry.value as Object?,
+      };
+    }
+
     // Support both direct JSON objects and Ollama `{"response": "{...}"}` wrappers.
+    final Map<String, Object?> envelope =
+        asObjectMap(Map<dynamic, dynamic>.from(decoded));
     final Map<String, Object?> normalizedMap;
-    if (decoded['response'] is String) {
-      normalizedMap =
-          jsonDecode(decoded['response']! as String) as Map<String, Object?>;
+    final Object? wrapped = envelope['response'];
+    if (wrapped is String) {
+      final Object? inner = jsonDecode(wrapped);
+      if (inner is! Map) {
+        throw const UnravelSchemaValidationException(
+          'Expected JSON object inside Ollama response wrapper.',
+        );
+      }
+      normalizedMap = asObjectMap(Map<dynamic, dynamic>.from(inner));
     } else {
-      normalizedMap = decoded;
+      normalizedMap = envelope;
     }
 
     return UntangledKnotSuggestion.fromValidatedJson(normalizedMap);

@@ -1,0 +1,25 @@
+Unravel
+Copyright (C) 2026 Praneel S
+
+This product is Free Software under the GNU General Public License, version 3
+or (at your option) any later version. See the file LICENSE.
+
+Third-party components shipped with the open-source edition
+-----------------------------------------------------------
+
+IBM Plex Serif, IBM Plex Sans, and IBM Plex Mono
+  Copyright of their respective authors
+  Licensed under the SIL Open Font License, Version 1.1
+  See packages/core/assets/fonts/OFL-IBMPlex.txt
+
+Vosk (vosk-android) and the bundled English speech model
+  vosk-model-small-en-us-0.15
+  Copyright Alpha Cephei Inc. and contributors
+  Licensed under the Apache License, Version 2.0
+  https://github.com/alphacep/vosk-api
+  Model files live under:
+  apps/unravel_foss/android/app/src/main/assets/vosk-model-small-en-us-0.15/
+
+Flutter, Dart, and other build-time dependencies remain under their own
+licenses and are not redistributed as source in this repository except as
+referenced by pubspec.lock / the Android Gradle build.

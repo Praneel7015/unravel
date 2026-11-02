@@ -177,6 +177,7 @@ class OpenThreads extends Table {
       )();
 
   /// Initial "What My Fear Predicted" intensity score (`1..10`) captured before the moment.
+  // ignore: recursive_getters
   IntColumn get predictedFear =>
       integer().check(predictedFear.isBetweenValues(1, 10))();
 
@@ -218,10 +219,12 @@ class PerspectiveLogs extends Table {
       text().references(OpenThreads, #id, onDelete: KeyAction.cascade)();
 
   /// "What My Fear Predicted" score on a 1–10 scale.
+  // ignore: recursive_getters
   IntColumn get predictedFear =>
       integer().check(predictedFear.isBetweenValues(1, 10))();
 
   /// "How Life Actually Unfolded" score on a 1–10 scale.
+  // ignore: recursive_getters
   IntColumn get actualOutcome =>
       integer().check(actualOutcome.isBetweenValues(1, 10))();
 

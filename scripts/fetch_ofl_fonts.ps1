@@ -1,25 +1,24 @@
-# Fetches the exact SIL Open Font License (OFL 1.1) .ttf binaries required by
-# `packages/core/pubspec.yaml` so `GoogleFonts.config.allowRuntimeFetching = false`
-# resolves 100% offline on F-Droid (`app.unravel.foss`) and Store builds.
+# Verifies the bundled SIL Open Font License IBM Plex faces used by packages/core.
 
 $ErrorActionPreference = "Stop"
 $FontDir = Join-Path $PSScriptRoot "..\packages\core\assets\fonts"
-New-Item -ItemType Directory -Force -Path $FontDir | Out-Null
 
-$Fonts = @{
-  "Newsreader-Regular.ttf"       = "https://github.com/google/fonts/raw/main/ofl/newsreader/Newsreader%5Bopsz,wght%5D.ttf"
-  "Newsreader-Medium.ttf"        = "https://github.com/google/fonts/raw/main/ofl/newsreader/Newsreader%5Bopsz,wght%5D.ttf"
-  "Newsreader-Italic.ttf"        = "https://github.com/google/fonts/raw/main/ofl/newsreader/Newsreader-Italic%5Bopsz,wght%5D.ttf"
-  "PlusJakartaSans-Regular.ttf"  = "https://github.com/google/fonts/raw/main/ofl/plusjakartasans/PlusJakartaSans%5Bwght%5D.ttf"
-  "PlusJakartaSans-SemiBold.ttf" = "https://github.com/google/fonts/raw/main/ofl/plusjakartasans/PlusJakartaSans%5Bwght%5D.ttf"
-  "JetBrainsMono-Regular.ttf"    = "https://github.com/google/fonts/raw/main/ofl/jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf"
-  "JetBrainsMono-Medium.ttf"     = "https://github.com/google/fonts/raw/main/ofl/jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf"
+$Required = @(
+  "IBMPlexSerif-Regular.ttf",
+  "IBMPlexSerif-Medium.ttf",
+  "IBMPlexSerif-Italic.ttf",
+  "IBMPlexSans-Regular.ttf",
+  "IBMPlexSans-SemiBold.ttf",
+  "IBMPlexMono-Regular.ttf",
+  "IBMPlexMono-Medium.ttf",
+  "OFL-IBMPlex.txt"
+)
+
+foreach ($Name in $Required) {
+  $Path = Join-Path $FontDir $Name
+  if (-not (Test-Path $Path) -or (Get-Item $Path).Length -le 0) {
+    throw "Missing font asset: $Path"
+  }
 }
 
-foreach ($Entry in $Fonts.GetEnumerator()) {
-  $OutFile = Join-Path $FontDir $Entry.Key
-  Write-Host "Downloading $($Entry.Key) ..."
-  Invoke-WebRequest -Uri $Entry.Value -OutFile $OutFile -UseBasicParsing
-}
-
-Write-Host "Verified all 7 OFL font binaries in $FontDir"
+Write-Host "Verified $($Required.Count) IBM Plex / OFL files in $FontDir"

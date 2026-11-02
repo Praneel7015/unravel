@@ -240,8 +240,17 @@ class StoreCloudAiRelay implements UnravelAiRelay {
       aiCallsToday += 1;
     }
 
-    final Map<String, Object?> data =
-        jsonDecode(response.body) as Map<String, Object?>;
+    final Object? decoded = jsonDecode(response.body);
+    if (decoded is! Map) {
+      throw const UnravelSchemaValidationException(
+        'Expected JSON object from managed relay.',
+      );
+    }
+    final Map<String, Object?> data = <String, Object?>{
+      for (final MapEntry<dynamic, dynamic> entry
+          in Map<dynamic, dynamic>.from(decoded).entries)
+        entry.key.toString(): entry.value as Object?,
+    };
     return UntangledKnotSuggestion.fromValidatedJson(data);
   }
 }

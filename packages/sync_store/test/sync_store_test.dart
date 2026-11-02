@@ -13,7 +13,7 @@ void main() {
   );
 
   group('StoreSyncEngine — Zero-Bill-Shock Entitlement Gate & E2EE Sync', () {
-    test('free tier ($0.00 gate) throws StoreEntitlementException before any HTTP call', () async {
+    test(r'free tier ($0.00 gate) throws StoreEntitlementException before any HTTP call', () async {
       int httpCalls = 0;
       final MockClient mockClient = MockClient((http.Request request) async {
         httpCalls += 1;

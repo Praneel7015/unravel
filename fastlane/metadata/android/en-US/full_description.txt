@@ -12,7 +12,7 @@ Circadian Botanical Design System:
   2. High Sun (11:00–17:30 — Raw Limestone Neutral)
   3. Dusk Pine (17:30–23:00 — Evening Nature Dark)
   4. Midnight Starlight (23:00–06:00 — Pure #000000 OLED Black)
-• Bundled offline SIL Open Font License (OFL) typography (Newsreader, Plus Jakarta Sans, and JetBrains Mono) with runtime network font fetching disabled.
+• Bundled offline SIL Open Font License (OFL) typography (IBM Plex Serif, IBM Plex Sans, and IBM Plex Mono). Nothing loads fonts from the network.
 
 Sovereign Privacy & 100% Air-Gapped FOSS Architecture (`app.unravel.foss`):
 • Local-first Drift SQLite storage with on-device AES-256-GCM envelope encryption and Argon2id key wrapping.

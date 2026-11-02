@@ -81,16 +81,21 @@ class UntangledKnotSuggestion {
 
     final List<UnraveledWorryItem> parsedWorries = <UnraveledWorryItem>[];
     final Object? rawUntangled = json['untangledWorries'];
-    if (rawUntangled is List<Object?> && rawUntangled.isNotEmpty) {
+    if (rawUntangled is List && rawUntangled.isNotEmpty) {
       for (int i = 0; i < rawUntangled.length; i++) {
         final Object? item = rawUntangled[i];
-        if (item is! Map<String, Object?>) {
+        if (item is! Map) {
           throw const UnravelSchemaValidationException(
             'Each item in untangledWorries must be a JSON object.',
           );
         }
+        final Map<String, Object?> row = <String, Object?>{
+          for (final MapEntry<dynamic, dynamic> entry
+              in Map<dynamic, dynamic>.from(item).entries)
+            entry.key.toString(): entry.value as Object?,
+        };
         final String? rawScope =
-            (item['controlScope'] ?? item['scope']) as String?;
+            (row['controlScope'] ?? row['scope']) as String?;
         if (rawScope != 'WITHIN_MY_CONTROL' &&
             rawScope != 'BEYOND_MY_CONTROL') {
           throw UnravelSchemaValidationException(
@@ -98,18 +103,18 @@ class UntangledKnotSuggestion {
           );
         }
         final String worryText =
-            ((item['worryText'] ?? item['worry'] ?? '') as String).trim();
+            ((row['worryText'] ?? row['worry'] ?? '') as String).trim();
         if (worryText.isEmpty) {
           throw const UnravelSchemaValidationException(
             'untangledWorries item is missing non-empty worryText.',
           );
         }
-        final String actionOrGrounding = ((item['actionOrGrounding'] ??
-                item['stoicReframe'] ??
+        final String actionOrGrounding = ((row['actionOrGrounding'] ??
+                row['stoicReframe'] ??
                 'Focus on the clarity of your own preparation.') as String)
             .trim();
         final String idx =
-            ((item['indexNumber'] as String?) ?? (i + 1).toString())
+            ((row['indexNumber'] as String?) ?? (i + 1).toString())
                 .padLeft(2, '0');
 
         parsedWorries.add(
@@ -124,15 +129,14 @@ class UntangledKnotSuggestion {
         );
       }
     } else {
-      final List<Object?>? legacyWorries =
-          (json['numberedWorries'] ?? json['worries']) as List<Object?>?;
-      if (legacyWorries == null || legacyWorries.isEmpty) {
+      final Object? legacyRaw = json['numberedWorries'] ?? json['worries'];
+      if (legacyRaw is! List || legacyRaw.isEmpty) {
         throw const UnravelSchemaValidationException(
           'Response must include non-empty untangledWorries.',
         );
       }
       final List<String> strings =
-          legacyWorries.whereType<String>().toList(growable: false);
+          legacyRaw.whereType<String>().toList(growable: false);
       for (int i = 0; i < strings.length; i++) {
         parsedWorries.add(
           UnraveledWorryItem(

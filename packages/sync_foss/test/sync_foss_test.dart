@@ -196,8 +196,8 @@ void main() {
     test('fails over automatically from primary model (HTTP 429/503) to fallback model', () async {
       final List<String> attemptedModels = <String>[];
       final MockClient mockClient = MockClient((http.Request request) async {
-        final Map<String, Object?> body =
-            jsonDecode(request.body) as Map<String, Object?>;
+        final Map<String, dynamic> body =
+            jsonDecode(request.body) as Map<String, dynamic>;
         final String model = body['model']! as String;
         attemptedModels.add(model);
 
@@ -205,28 +205,35 @@ void main() {
           return http.Response('Rate limit exceeded', 429);
         }
 
-        return http.Response(
-          jsonEncode(<String, Object>{
-            'eventTitle': 'Board Presentation',
-            'whatFearSays': '“One tough question will derail the pitch.”',
-            'groundedTruth': 'Questions are signs of engagement, not hostility.',
-            'physicalAnchor': 'Exhale slowly before answering.',
-            'untangledWorries': <Object>[
-              <String, Object>{
-                'indexNumber': '01',
-                'worryText': 'Clarifying the Q4 unit economics.',
-                'controlScope': 'WITHIN_MY_CONTROL',
-                'actionOrGrounding': 'Bring the one-page cost breakdown.',
-              },
-              <String, Object>{
-                'indexNumber': '02',
-                'worryText': 'Macroeconomic budget freezes.',
-                'controlScope': 'BEYOND_MY_CONTROL',
-                'actionOrGrounding': 'Focus only on the clarity of your proposal.',
-              },
-            ],
-          }),
+        return http.Response.bytes(
+          utf8.encode(
+            jsonEncode(<String, Object>{
+              'eventTitle': 'Board Presentation',
+              'whatFearSays': '"One tough question will derail the pitch."',
+              'groundedTruth':
+                  'Questions are signs of engagement, not hostility.',
+              'physicalAnchor': 'Exhale slowly before answering.',
+              'untangledWorries': <Object>[
+                <String, Object>{
+                  'indexNumber': '01',
+                  'worryText': 'Clarifying the Q4 unit economics.',
+                  'controlScope': 'WITHIN_MY_CONTROL',
+                  'actionOrGrounding': 'Bring the one-page cost breakdown.',
+                },
+                <String, Object>{
+                  'indexNumber': '02',
+                  'worryText': 'Macroeconomic budget freezes.',
+                  'controlScope': 'BEYOND_MY_CONTROL',
+                  'actionOrGrounding':
+                      'Focus only on the clarity of your proposal.',
+                },
+              ],
+            }),
+          ),
           200,
+          headers: const <String, String>{
+            'content-type': 'application/json; charset=utf-8',
+          },
         );
       });
 

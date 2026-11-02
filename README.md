@@ -98,30 +98,40 @@ docker compose --profile local-ai up -d
 
 ---
 
-## 6. Reproducible Build Instructions for F-Droid Maintainers
+## 6. License
 
-`apps/unravel_foss` (`app.unravel.foss`) is engineered to pass `fdroid scanner` with zero warnings:
+Unravel is Free Software under the **GNU General Public License v3.0 or later**.
+See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE). F-Droid packaging notes live in [`docs/F-DROID.md`](docs/F-DROID.md). The starter recipe for [fdroiddata](https://gitlab.com/fdroid/fdroiddata) is [`metadata/app.unravel.foss.yml`](metadata/app.unravel.foss.yml).
+
+---
+
+## 7. Reproducible Build Instructions for F-Droid Maintainers
+
+`apps/unravel_foss` (`app.unravel.foss`) is the only package intended for F-Droid. Flutter is pinned in [`.flutter-version`](.flutter-version).
 
 ```bash
-# 1. Fetch and verify the 7 SIL Open Font License (OFL 1.1) .ttf binaries
+# 1. Verify the bundled SIL Open Font License IBM Plex faces
 ./scripts/fetch_ofl_fonts.sh
 
-# 2. Verify zero proprietary dependencies exist in the FOSS tree
+# 2. On a throwaway clone, drop the store edition from the workspace
+./scripts/fdroid_prepare_foss_tree.sh
+
+# 3. Verify zero proprietary dependencies exist in the FOSS tree
 grep -RInE "(purchases_flutter|supabase_flutter|firebase_|com\.android\.billingclient|com\.google\.android\.gms)" \
   apps/unravel_foss packages/sync_foss/lib packages/sync_foss/pubspec.yaml && exit 1 || echo "Clean FOSS tree"
 
-# 3. Resolve workspace dependencies & run tests
+# 4. Resolve workspace dependencies & run tests
 flutter pub get
 flutter test packages/core/test/unravel_core_test.dart
 flutter test packages/sync_foss/test/sync_foss_test.dart
 
-# 4. Build the reproducible FOSS APK
+# 5. Build the FOSS APK
 cd apps/unravel_foss
 flutter build apk --release --no-pub
 ```
 
 ---
 
-## 7. Philosophical Safe-Harbor Notice
+## 8. Philosophical Safe-Harbor Notice
 
 Unravel is a Stoic and botanical field journal for personal contemplation, not a medical device, clinical diagnostic tool, or substitute for professional mental health care. If you are experiencing a mental health crisis, please contact your local emergency services or a crisis support helpline.

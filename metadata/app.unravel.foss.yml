@@ -1,0 +1,63 @@
+# Starter recipe for https://gitlab.com/fdroid/fdroiddata
+# Copy this file into fdroiddata as metadata/app.unravel.foss.yml
+# After tagging a release, set Builds[].commit to that tag's full hash.
+
+Categories:
+  - Writing
+  - Sports & Health
+
+License: GPL-3.0-or-later
+
+AuthorName: Praneel S
+AuthorEmail: praneelsindhole@gmail.com
+
+SourceCode: https://github.com/Praneel7015/unravel
+IssueTracker: https://github.com/Praneel7015/unravel/issues
+Changelog: https://github.com/Praneel7015/unravel/releases
+
+AutoName: Unravel
+
+RepoType: git
+Repo: https://github.com/Praneel7015/unravel.git
+
+Builds:
+  - versionName: 0.1.0
+    versionCode: 1
+    # Replace with the full commit hash of tag v0.1.0 before the fdroiddata MR.
+    commit: 2e720521505c153c112c72c3bca7635b30e2d7b8
+    subdir: apps/unravel_foss
+    output: build/app/outputs/flutter-apk/app-release.apk
+    srclibs:
+      - flutter@3.47.9
+    rm:
+      - apps/unravel_store
+      - packages/sync_store
+      - site
+      - docker
+      - supabase
+      - design
+      - .cursor
+    prebuild:
+      - flutterVersion=$(tr -d '[:space:]' < ../../.flutter-version)
+      - '[[ $flutterVersion ]]'
+      - git -C $$flutter$$ checkout -f "$flutterVersion"
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - $$flutter$$/bin/flutter config --no-analytics
+      - bash ../../scripts/fdroid_prepare_foss_tree.sh
+      - pushd ../..
+      - $$flutter$$/bin/flutter pub get
+      - popd
+    scanignore:
+      - .pub-cache
+    scandelete:
+      - $$flutter$$
+      - .pub-cache
+    build:
+      - export PUB_CACHE=$(pwd)/.pub-cache
+      - $$flutter$$/bin/flutter build apk --release --no-pub
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+UpdateCheckData: apps/unravel_foss/pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
+CurrentVersion: 0.1.0
+CurrentVersionCode: 1

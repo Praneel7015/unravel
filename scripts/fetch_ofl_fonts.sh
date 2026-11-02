@@ -1,20 +1,27 @@
 #!/usr/bin/env bash
-# Fetches the exact SIL Open Font License (OFL 1.1) .ttf binaries required by
-# `packages/core/pubspec.yaml` for 100% air-gapped F-Droid & Store builds.
+# Verifies the bundled SIL Open Font License IBM Plex faces used by
+# packages/core. The binaries are committed under packages/core/assets/fonts/.
 
 set -euo pipefail
 
 FONT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/packages/core/assets/fonts"
-mkdir -p "$FONT_DIR"
 
-curl -fsSL "https://github.com/google/fonts/raw/main/ofl/newsreader/Newsreader%5Bopsz,wght%5D.ttf" -o "$FONT_DIR/Newsreader-Regular.ttf"
-cp "$FONT_DIR/Newsreader-Regular.ttf" "$FONT_DIR/Newsreader-Medium.ttf"
-curl -fsSL "https://github.com/google/fonts/raw/main/ofl/newsreader/Newsreader-Italic%5Bopsz,wght%5D.ttf" -o "$FONT_DIR/Newsreader-Italic.ttf"
+required=(
+  IBMPlexSerif-Regular.ttf
+  IBMPlexSerif-Medium.ttf
+  IBMPlexSerif-Italic.ttf
+  IBMPlexSans-Regular.ttf
+  IBMPlexSans-SemiBold.ttf
+  IBMPlexMono-Regular.ttf
+  IBMPlexMono-Medium.ttf
+  OFL-IBMPlex.txt
+)
 
-curl -fsSL "https://github.com/google/fonts/raw/main/ofl/plusjakartasans/PlusJakartaSans%5Bwght%5D.ttf" -o "$FONT_DIR/PlusJakartaSans-Regular.ttf"
-cp "$FONT_DIR/PlusJakartaSans-Regular.ttf" "$FONT_DIR/PlusJakartaSans-SemiBold.ttf"
+for f in "${required[@]}"; do
+  test -s "$FONT_DIR/$f" || {
+    echo "Missing font asset: $FONT_DIR/$f" >&2
+    exit 1
+  }
+done
 
-curl -fsSL "https://github.com/google/fonts/raw/main/ofl/jetbrainsmono/JetBrainsMono%5Bwght%5D.ttf" -o "$FONT_DIR/JetBrainsMono-Regular.ttf"
-cp "$FONT_DIR/JetBrainsMono-Regular.ttf" "$FONT_DIR/JetBrainsMono-Medium.ttf"
-
-echo "Verified all 7 OFL font binaries in $FONT_DIR"
+echo "Verified ${#required[@]} IBM Plex / OFL files in $FONT_DIR"
