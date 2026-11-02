@@ -24,7 +24,7 @@ Builds:
   - versionName: 0.1.0
     versionCode: 1
     # Replace with the full commit hash of tag v0.1.0 before the fdroiddata MR.
-    commit: 2e720521505c153c112c72c3bca7635b30e2d7b8
+    commit: ba7387c0f31b1e45f95a4954ae5cf0c8cbd3f2b0
     subdir: apps/unravel_foss
     output: build/app/outputs/flutter-apk/app-release.apk
     srclibs:
