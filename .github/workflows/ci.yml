@@ -41,8 +41,8 @@ jobs:
 
       - name: F-Droid proprietary dependency and cloud URL audit
         run: |
-          echo "Auditing apps/unravel_foss and packages/sync_foss for forbidden proprietary references..."
-          if grep -RInE "(purchases_flutter|supabase_flutter|firebase_|com\.android\.billingclient|com\.google\.android\.gms|unravel_sync_store|supabase\.co)" apps/unravel_foss packages/sync_foss/lib packages/sync_foss/pubspec.yaml; then
+          echo "Auditing apps/unravel_foss, packages/sync_foss and packages/core for forbidden proprietary references..."
+          if grep -RInE "(purchases_flutter|supabase_flutter|firebase_|com\.android\.billingclient|com\.google\.android\.gms|unravel_sync_store|supabase\.co)" apps/unravel_foss packages/sync_foss/lib packages/sync_foss/pubspec.yaml packages/core/lib packages/core/pubspec.yaml; then
             echo "ERROR: Proprietary SDK or commercial cloud reference detected in FOSS tree!"
             exit 1
           fi
@@ -95,6 +95,28 @@ jobs:
 
       - name: Install workspace dependencies
         run: flutter pub get
+
+      - name: Audit the FOSS app's resolved dependency tree
+        # Catches proprietary SDKs pulled in transitively, e.g. through packages/core.
+        working-directory: apps/unravel_foss
+        run: |
+          flutter pub deps --json | python3 -c '
+          import json, re, sys
+          deps = json.load(sys.stdin)
+          packages = {p["name"]: p for p in deps["packages"]}
+          seen, stack = set(), ["unravel_foss"]
+          while stack:
+              name = stack.pop()
+              if name in seen or name not in packages:
+                  continue
+              seen.add(name)
+              stack.extend(packages[name].get("dependencies", []))
+          banned = re.compile(r"^(purchases_.*|supabase.*|gotrue|postgrest|realtime_client|storage_client|firebase_.*|google_mobile_ads|in_app_purchase.*|unravel_sync_store)$")
+          bad = sorted(n for n in seen if banned.match(n))
+          if bad:
+              sys.exit("ERROR: proprietary packages reachable from unravel_foss: " + ", ".join(bad))
+          print(f"PASS: {len(seen)} packages reachable from unravel_foss, none proprietary.")
+          '
 
       - name: Check formatting
         # Generated Drift code (*.g.dart) is left as build_runner writes it.

@@ -5,6 +5,11 @@ name: Release FOSS APK
 # after it tags a release; run it by hand to rebuild an existing release.
 on:
   workflow_call:
+    inputs:
+      ref:
+        description: Commit or tag to build (defaults to the triggering ref)
+        type: string
+        default: ""
   workflow_dispatch:
 
 permissions:
@@ -22,6 +27,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}
           fetch-depth: 0
           fetch-tags: true
 

@@ -4,7 +4,7 @@
 
 ## How it was tested
 
-- [ ] `dart format`, `flutter analyze` and `flutter test` pass locally
+- [ ] `dart format`, `flutter analyze` and `flutter test` in `packages/core`, `packages/sync_foss` and `packages/sync_store` pass locally
 - [ ] New encryption or storage code has a round-trip and a tamper test
 
 ## Unravel principles
