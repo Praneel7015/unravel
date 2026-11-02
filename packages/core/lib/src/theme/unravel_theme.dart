@@ -14,7 +14,8 @@ abstract final class UnravelTheme {
 
   /// Builds a [ThemeData] for the given [CircadianPalette].
   static ThemeData forPalette(CircadianPalette palette) {
-    final UnravelThemeExtension ext = UnravelThemeExtension.fromPalette(palette);
+    final UnravelThemeExtension ext =
+        UnravelThemeExtension.fromPalette(palette);
     return fromExtension(ext);
   }
 

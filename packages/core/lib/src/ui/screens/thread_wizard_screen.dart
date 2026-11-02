@@ -174,7 +174,8 @@ class _ThreadWizardScreenState extends State<ThreadWizardScreen> {
       if (mounted) {
         setState(() {
           _saving = false;
-          _error = error.message?.toString() ?? 'Check the fields and save again.';
+          _error =
+              error.message?.toString() ?? 'Check the fields and save again.';
         });
       }
     } on UnravelCryptoException catch (error) {
@@ -235,7 +236,8 @@ class _ThreadWizardScreenState extends State<ThreadWizardScreen> {
               const SizedBox(height: 18),
               Expanded(
                 child: SingleChildScrollView(
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
                   child: _stepBody(ext, typo),
                 ),
               ),
@@ -251,7 +253,8 @@ class _ThreadWizardScreenState extends State<ThreadWizardScreen> {
                 children: <Widget>[
                   if (_step > 0)
                     TextButton(
-                      onPressed: _saving ? null : () => setState(() => _step -= 1),
+                      onPressed:
+                          _saving ? null : () => setState(() => _step -= 1),
                       child: Text('Back', style: typo.bodyMedium),
                     ),
                   const Spacer(),
@@ -270,10 +273,13 @@ class _ThreadWizardScreenState extends State<ThreadWizardScreen> {
                     style: FilledButton.styleFrom(
                       backgroundColor: ext.primaryAccent,
                       foregroundColor: ext.onPrimaryAccent,
-                      padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 22, vertical: 14),
                     ),
                     child: Text(
-                      _step == _titles.length - 1 ? 'Save to Open Threads' : 'Continue',
+                      _step == _titles.length - 1
+                          ? 'Save to Open Threads'
+                          : 'Continue',
                       style: typo.pillButton,
                     ),
                   ),
@@ -352,7 +358,8 @@ class _ThreadWizardScreenState extends State<ThreadWizardScreen> {
             const SizedBox(height: 8),
             TextButton(
               onPressed: _toggleVoice,
-              child: Text(_listening ? 'Stop speaking' : 'Speak instead', style: typo.bodyMedium),
+              child: Text(_listening ? 'Stop speaking' : 'Speak instead',
+                  style: typo.bodyMedium),
             ),
           ],
         );

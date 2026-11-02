@@ -122,7 +122,9 @@ class _SetupFlowState extends State<SetupFlow> {
                 ),
               ),
               if (_error != null) ...<Widget>[
-                Text(_error!, style: typo.bodyMedium.copyWith(color: ext.terracottaAccent)),
+                Text(_error!,
+                    style:
+                        typo.bodyMedium.copyWith(color: ext.terracottaAccent)),
                 const SizedBox(height: 12),
               ],
               _actions(ext, typo),
@@ -242,7 +244,8 @@ class _SetupFlowState extends State<SetupFlow> {
             foregroundColor: ext.onPrimaryAccent,
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
           ),
-          child: Text(_step == 0 ? 'Continue' : 'Allow', style: typo.pillButton),
+          child:
+              Text(_step == 0 ? 'Continue' : 'Allow', style: typo.pillButton),
         ),
       ],
     );

@@ -25,7 +25,8 @@ class _FakeSyncEngine implements UnravelSyncEngine {
 }
 
 void main() {
-  group('CircadianResolver exact time-window boundaries & manual overrides', () {
+  group('CircadianResolver exact time-window boundaries & manual overrides',
+      () {
     test('verifies exact minute transitions across all 4 Circadian modes', () {
       // 23:00–05:59 -> Midnight Starlight (OLED)
       expect(
@@ -159,7 +160,8 @@ void main() {
   group('EnvelopeEncryptionService (AES-256-GCM + Argon2id)', () {
     final EnvelopeEncryptionService service = EnvelopeEncryptionService();
 
-    test('round-trips encryption/decryption and rejects AAD tampering', () async {
+    test('round-trips encryption/decryption and rejects AAD tampering',
+        () async {
       final SecretKey mdk = await service.generateMasterDataKey();
       const String cleartext =
           'They actually appreciated that I flagged the latency trade-off early.';
@@ -188,7 +190,8 @@ void main() {
       );
     });
 
-    test('rejects empty plaintext and malformed envelope formats (v2:...)', () async {
+    test('rejects empty plaintext and malformed envelope formats (v2:...)',
+        () async {
       final SecretKey mdk = await service.generateMasterDataKey();
 
       await expectLater(
@@ -219,7 +222,9 @@ void main() {
       );
     });
 
-    test('wraps and unwraps Master Data Key via Argon2id and rejects wrong passphrase', () async {
+    test(
+        'wraps and unwraps Master Data Key via Argon2id and rejects wrong passphrase',
+        () async {
       final SecretKey originalKey = await service.generateMasterDataKey();
       final WrappedMasterKeyBundle bundle = await service.wrapMasterKey(
         masterDataKey: originalKey,
@@ -244,7 +249,8 @@ void main() {
       );
     });
 
-    test('enforces 16384-byte hard cap on encrypted payloads vs valid payload', () async {
+    test('enforces 16384-byte hard cap on encrypted payloads vs valid payload',
+        () async {
       final SecretKey mdk = await service.generateMasterDataKey();
 
       // Valid moderately sized payload (~4 KiB) succeeds cleanly
@@ -254,7 +260,8 @@ void main() {
         masterDataKey: mdk,
         associatedRecordId: 'log_valid:notes',
       );
-      expect(validEnvelope.length, lessThanOrEqualTo(kMaxEncryptedPayloadBytes));
+      expect(
+          validEnvelope.length, lessThanOrEqualTo(kMaxEncryptedPayloadBytes));
 
       // Exact 16384-byte raw plaintext expands beyond 16384 bytes once base64 + GCM tag are added
       final String boundaryPlaintext = 'A' * kMaxEncryptedPayloadBytes;
@@ -268,7 +275,8 @@ void main() {
       );
 
       // Oversized envelope passed to decryptText is also rejected before base64 decoding
-      final String oversizedEnvelope = 'v1:aa:${'B' * kMaxEncryptedPayloadBytes}:cc';
+      final String oversizedEnvelope =
+          'v1:aa:${'B' * kMaxEncryptedPayloadBytes}:cc';
       await expectLater(
         () => service.decryptText(
           encryptedEnvelope: oversizedEnvelope,
@@ -280,7 +288,9 @@ void main() {
     });
   });
 
-  group('UnravelJournalController lifecycle & notification scheduling variabilities', () {
+  group(
+      'UnravelJournalController lifecycle & notification scheduling variabilities',
+      () {
     test(
       'creates OpenThread with scheduleNotification true vs false, completes After a Moment check-in, and purges vault',
       () async {
@@ -292,7 +302,8 @@ void main() {
         );
 
         // 1. Create an OpenThread with scheduleNotification: true
-        final OpenThreadRecord scheduledThread = await controller.createOpenThread(
+        final OpenThreadRecord scheduledThread =
+            await controller.createOpenThread(
           eventTitle: 'Architecture Trade-off Review',
           worries: const <UnraveledWorryItem>[
             UnraveledWorryItem(
@@ -309,12 +320,14 @@ void main() {
         );
 
         expect(
-          controller.scheduledNotificationThreadIds.contains(scheduledThread.id),
+          controller.scheduledNotificationThreadIds
+              .contains(scheduledThread.id),
           isTrue,
         );
 
         // 2. Create an OpenThread with scheduleNotification: false
-        final OpenThreadRecord unscheduledThread = await controller.createOpenThread(
+        final OpenThreadRecord unscheduledThread =
+            await controller.createOpenThread(
           eventTitle: 'Quiet Solo Design Sprint',
           worries: const <UnraveledWorryItem>[
             UnraveledWorryItem(
@@ -329,7 +342,8 @@ void main() {
         );
 
         expect(
-          controller.scheduledNotificationThreadIds.contains(unscheduledThread.id),
+          controller.scheduledNotificationThreadIds
+              .contains(unscheduledThread.id),
           isFalse,
         );
 
@@ -346,7 +360,8 @@ void main() {
         expect(curveEntry.predictedFear, 9);
         expect(curveEntry.actualOutcome, 1);
         expect(
-          controller.scheduledNotificationThreadIds.contains(scheduledThread.id),
+          controller.scheduledNotificationThreadIds
+              .contains(scheduledThread.id),
           isFalse,
         );
         expect(
@@ -368,7 +383,8 @@ void main() {
   });
 
   group('UI Polish Fixes & Sanctuary compliance widget tests', () {
-    test('encodes and parses After a Moment notification deep-link payload', () {
+    test('encodes and parses After a Moment notification deep-link payload',
+        () {
       const String threadId = 'thread_interview_01';
       final String payload =
           LocalCheckInNotificationService.buildDeepLinkPayload(threadId);
@@ -473,10 +489,12 @@ void main() {
         await tester.scrollUntilVisible(
           find.text('Purge Vault & Delete Cloud Account'),
           200,
-          scrollable: find.descendant(
-            of: find.byType(SanctuaryScreen),
-            matching: find.byType(Scrollable),
-          ).first,
+          scrollable: find
+              .descendant(
+                of: find.byType(SanctuaryScreen),
+                matching: find.byType(Scrollable),
+              )
+              .first,
         );
         await tester.tap(find.text('Purge Vault & Delete Cloud Account'));
         await tester.pumpAndSettle();
@@ -567,7 +585,8 @@ void main() {
           'eventTitle': 'Architecture Review',
           'whatFearSays': '“Any silence means I failed.”',
           'groundedTruth': 'Composure invites thoughtful engineering dialogue.',
-          'physicalAnchor': 'Place both feet flat on the floor before speaking.',
+          'physicalAnchor':
+              'Place both feet flat on the floor before speaking.',
           'untangledWorries': <Object?>[
             <String, Object?>{
               'indexNumber': '01',
@@ -635,7 +654,8 @@ void main() {
       expect(distant, lessThan(0.2));
     });
 
-    test('the open-source app refuses a store journal before decrypting it', () {
+    test('the open-source app refuses a store journal before decrypting it',
+        () {
       const WrappedMasterKeyBundle wrapped = WrappedMasterKeyBundle(
         version: 1,
         argon2SaltBase64: 'c2FsdA==',

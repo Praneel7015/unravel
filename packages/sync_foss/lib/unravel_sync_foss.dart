@@ -1,4 +1,4 @@
-library unravel_sync_foss;
+library;
 
 import 'dart:convert';
 
@@ -176,7 +176,8 @@ class FossByokAiRelay implements UnravelAiRelay {
       return _localStoicFallback(trimmed);
     }
 
-    final List<({Uri uri, String model})> attempts = <({Uri uri, String model})>[
+    final List<({Uri uri, String model})> attempts =
+        <({Uri uri, String model})>[
       (uri: primaryTarget, model: modelName),
       if (fallbackEndpointUri != null)
         (uri: fallbackEndpointUri!, model: fallbackModelName)

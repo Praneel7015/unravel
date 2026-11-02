@@ -1,3 +1,6 @@
+// Drift column getters reference themselves inside `check()` constraints.
+// ignore_for_file: recursive_getters
+
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
@@ -90,7 +93,8 @@ class UnraveledWorryItem {
     }
     if (raw is Map) {
       final Map<String, Object?> json = raw.map(
-        (dynamic key, dynamic value) => MapEntry(key.toString(), value as Object?),
+        (dynamic key, dynamic value) =>
+            MapEntry(key.toString(), value as Object?),
       );
       return UnraveledWorryItem(
         indexNumber: (json['idx'] as String?) ?? defaultIdx,
@@ -162,11 +166,10 @@ class OpenThreads extends Table {
 
   /// Optional AES-256-GCM encrypted spoken voice transcript quote (`v1:<nonce>:<ct>:<mac>`).
   /// Raw audio is never stored on servers; even the transcript is E2EE capped at 16 KiB.
-  TextColumn get encryptedTranscript => text()
-      .nullable()
-      .check(encryptedTranscript.length.isSmallerOrEqualValue(
-        kMaxEncryptedPayloadBytes,
-      ))();
+  TextColumn get encryptedTranscript =>
+      text().nullable().check(encryptedTranscript.length.isSmallerOrEqualValue(
+            kMaxEncryptedPayloadBytes,
+          ))();
 
   /// Complete AES-256-GCM encrypted envelope (`<= 16384` bytes) used whenever
   /// this thread is synced to WebDAV/Nextcloud or Supabase Cloud.
@@ -177,7 +180,6 @@ class OpenThreads extends Table {
       )();
 
   /// Initial "What My Fear Predicted" intensity score (`1..10`) captured before the moment.
-  // ignore: recursive_getters
   IntColumn get predictedFear =>
       integer().check(predictedFear.isBetweenValues(1, 10))();
 
@@ -219,12 +221,10 @@ class PerspectiveLogs extends Table {
       text().references(OpenThreads, #id, onDelete: KeyAction.cascade)();
 
   /// "What My Fear Predicted" score on a 1–10 scale.
-  // ignore: recursive_getters
   IntColumn get predictedFear =>
       integer().check(predictedFear.isBetweenValues(1, 10))();
 
   /// "How Life Actually Unfolded" score on a 1–10 scale.
-  // ignore: recursive_getters
   IntColumn get actualOutcome =>
       integer().check(actualOutcome.isBetweenValues(1, 10))();
 

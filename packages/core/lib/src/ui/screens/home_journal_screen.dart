@@ -238,7 +238,8 @@ class HomeJournalScreen extends StatelessWidget {
                   style: typo.bodyMedium,
                 )
               else
-                for (final OpenThreadRecord thread in activeThreads) ...<Widget>[
+                for (final OpenThreadRecord thread
+                    in activeThreads) ...<Widget>[
                   _OpenThreadHeroCard(
                     thread: thread,
                     onCheckInTap: () => showUnravelKnotSheet(

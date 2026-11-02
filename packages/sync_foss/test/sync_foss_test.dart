@@ -8,7 +8,8 @@ import 'package:unravel_sync_foss/unravel_sync_foss.dart';
 
 void main() {
   group('FossSyncEngine — Air-Gapped, HTTPS & WebDAV Invariants', () {
-    test('air-gapped default mode makes zero network calls on push and delete', () async {
+    test('air-gapped default mode makes zero network calls on push and delete',
+        () async {
       int httpCalls = 0;
       final MockClient mockClient = MockClient((http.Request request) async {
         httpCalls += 1;
@@ -25,7 +26,9 @@ void main() {
       expect(httpCalls, 0);
     });
 
-    test('rejects cleartext HTTP remote URLs (http://example.com) before any network call', () async {
+    test(
+        'rejects cleartext HTTP remote URLs (http://example.com) before any network call',
+        () async {
       int httpCalls = 0;
       final MockClient mockClient = MockClient((http.Request request) async {
         httpCalls += 1;
@@ -53,7 +56,9 @@ void main() {
       expect(httpCalls, 0);
     });
 
-    test('allows loopback HTTP (http://localhost and http://127.0.0.1) and HTTPS endpoints', () async {
+    test(
+        'allows loopback HTTP (http://localhost and http://127.0.0.1) and HTTPS endpoints',
+        () async {
       final List<Uri> requestedUris = <Uri>[];
       final MockClient mockClient = MockClient((http.Request request) async {
         requestedUris.add(request.url);
@@ -63,7 +68,8 @@ void main() {
       final List<Uri> validEndpoints = <Uri>[
         Uri.parse('http://localhost:8080/webdav/vault.json'),
         Uri.parse('http://127.0.0.1:8080/webdav/vault.json'),
-        Uri.parse('https://nextcloud.example.org/remote.php/dav/files/user/unravel.json'),
+        Uri.parse(
+            'https://nextcloud.example.org/remote.php/dav/files/user/unravel.json'),
       ];
 
       for (final Uri uri in validEndpoints) {
@@ -77,7 +83,9 @@ void main() {
       expect(requestedUris, equals(validEndpoints));
     });
 
-    test('rejects encrypted payload exceeding 16,384 UTF-8 bytes before any network call', () async {
+    test(
+        'rejects encrypted payload exceeding 16,384 UTF-8 bytes before any network call',
+        () async {
       int httpCalls = 0;
       final MockClient mockClient = MockClient((http.Request request) async {
         httpCalls += 1;
@@ -103,7 +111,9 @@ void main() {
       expect(httpCalls, 1);
     });
 
-    test('executes WebDAV PUT and DELETE with Authorization header and schema envelope', () async {
+    test(
+        'executes WebDAV PUT and DELETE with Authorization header and schema envelope',
+        () async {
       http.Request? capturedPut;
       http.Request? capturedDelete;
 
@@ -119,15 +129,16 @@ void main() {
         return http.Response('Unexpected method', 405);
       });
 
-      final Uri endpoint =
-          Uri.parse('https://nextcloud.example.org/remote.php/dav/files/u/vault.json');
+      final Uri endpoint = Uri.parse(
+          'https://nextcloud.example.org/remote.php/dav/files/u/vault.json');
       final FossSyncEngine engine = FossSyncEngine(
         webDavEndpoint: endpoint,
         authHeaderValue: 'Basic dXNlcjpzZWNyZXQ=',
         httpClient: mockClient,
       );
 
-      await engine.pushEncryptedEnvelopes(<String>['v1:n1:c1:m1', 'v1:n2:c2:m2']);
+      await engine
+          .pushEncryptedEnvelopes(<String>['v1:n1:c1:m1', 'v1:n2:c2:m2']);
       expect(capturedPut, isNotNull);
       expect(capturedPut!.url, endpoint);
       expect(capturedPut!.headers['Authorization'], 'Basic dXNlcjpzZWNyZXQ=');
@@ -135,17 +146,21 @@ void main() {
       final Map<String, Object?> decodedBody =
           jsonDecode(capturedPut!.body) as Map<String, Object?>;
       expect(decodedBody['schema'], 'unravel.e2ee.v1');
-      expect(decodedBody['envelopes'], equals(<String>['v1:n1:c1:m1', 'v1:n2:c2:m2']));
+      expect(decodedBody['envelopes'],
+          equals(<String>['v1:n1:c1:m1', 'v1:n2:c2:m2']));
 
       await engine.deleteCloudAccountAndData();
       expect(capturedDelete, isNotNull);
       expect(capturedDelete!.url, endpoint);
-      expect(capturedDelete!.headers['Authorization'], 'Basic dXNlcjpzZWNyZXQ=');
+      expect(
+          capturedDelete!.headers['Authorization'], 'Basic dXNlcjpzZWNyZXQ=');
     });
   });
 
   group('FossByokAiRelay — Local Ollama & Deterministic Stoic Fallback', () {
-    test('uses deterministic offline Stoic fallback when unconfigured or network fails', () async {
+    test(
+        'uses deterministic offline Stoic fallback when unconfigured or network fails',
+        () async {
       final FossByokAiRelay unconfiguredRelay = FossByokAiRelay();
       expect(unconfiguredRelay.isConfigured, isFalse);
 
@@ -160,7 +175,9 @@ void main() {
       expect(suggestion.groundingAnchor, isNotEmpty);
     });
 
-    test('parses structured JSON from local Ollama / BYOK endpoint when configured', () async {
+    test(
+        'parses structured JSON from local Ollama / BYOK endpoint when configured',
+        () async {
       final MockClient mockClient = MockClient((http.Request request) async {
         expect(request.method, 'POST');
         expect(request.headers['Authorization'], 'Bearer sk-local-key');
@@ -171,7 +188,8 @@ void main() {
               'Defending the SQLite local-first schema.',
               'Explaining Argon2id memory parameters.',
             ],
-            'groundingAnchor': 'Simplicity and preparation speak for themselves.',
+            'groundingAnchor':
+                'Simplicity and preparation speak for themselves.',
           }),
           200,
         );
@@ -190,10 +208,13 @@ void main() {
 
       expect(result.eventTitle, 'System Design Deep Dive');
       expect(result.numberedWorries.length, 2);
-      expect(result.groundingAnchor, 'Simplicity and preparation speak for themselves.');
+      expect(result.groundingAnchor,
+          'Simplicity and preparation speak for themselves.');
     });
 
-    test('fails over automatically from primary model (HTTP 429/503) to fallback model', () async {
+    test(
+        'fails over automatically from primary model (HTTP 429/503) to fallback model',
+        () async {
       final List<String> attemptedModels = <String>[];
       final MockClient mockClient = MockClient((http.Request request) async {
         final Map<String, dynamic> body =
@@ -245,7 +266,8 @@ void main() {
       );
 
       final UntangledKnotSuggestion result = await relay.untanglePreEventKnot(
-        rawThoughtOrTranscript: 'Anxious about the board presentation tomorrow.',
+        rawThoughtOrTranscript:
+            'Anxious about the board presentation tomorrow.',
       );
 
       expect(attemptedModels, equals(<String>['llama3.2', 'qwen2.5:3b']));

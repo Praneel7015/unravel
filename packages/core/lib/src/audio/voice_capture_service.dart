@@ -50,8 +50,7 @@ class VoiceAmplitudeFrame {
   /// Formatted remaining countdown (`-0:18`).
   String get remainingLabel {
     final Duration remaining = maxDuration - elapsed;
-    final Duration clamped =
-        remaining.isNegative ? Duration.zero : remaining;
+    final Duration clamped = remaining.isNegative ? Duration.zero : remaining;
     return '-${_formatMmSs(clamped)}';
   }
 
@@ -277,7 +276,8 @@ class EphemeralHardwareVoiceCaptureService implements VoiceCaptureService {
     // A denied microphone permission does not: the wave must not pretend to hear a voice.
     var hardwareBound = false;
     try {
-      _nativePcmSubscription = _pcmStreamChannel.receiveBroadcastStream().listen(
+      _nativePcmSubscription =
+          _pcmStreamChannel.receiveBroadcastStream().listen(
         (Object? event) {
           final Uint8List? pcm = pcm16FromPlatformEvent(event);
           if (pcm != null) {
@@ -430,9 +430,8 @@ class EphemeralHardwareVoiceCaptureService implements VoiceCaptureService {
 
     return EphemeralVoiceCaptureResult(
       transcript: resolvedTranscript,
-      recordedDuration: recordedDuration > _maxDuration
-          ? _maxDuration
-          : recordedDuration,
+      recordedDuration:
+          recordedDuration > _maxDuration ? _maxDuration : recordedDuration,
       peakAmplitude: _peakAmplitude,
       shreddedPcmBytes: shreddedBytes,
       shreddedTempFiles: shreddedFiles,

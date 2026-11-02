@@ -65,8 +65,10 @@ class _PerspectiveCurvePainter extends CustomPainter {
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
-    _drawDashedHorizontalLine(canvas, size.width, size.height * 0.25, gridPaint);
-    _drawDashedHorizontalLine(canvas, size.width, size.height * 0.65, gridPaint);
+    _drawDashedHorizontalLine(
+        canvas, size.width, size.height * 0.25, gridPaint);
+    _drawDashedHorizontalLine(
+        canvas, size.width, size.height * 0.65, gridPaint);
 
     final List<double> fearScores = entries
         .map((PerspectiveCurveEntry e) => e.predictedFear.toDouble())

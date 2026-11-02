@@ -108,8 +108,8 @@ class LocalCheckInNotificationService {
   Future<void> requestCheckInPermission() async {
     await initialize();
     try {
-      final AndroidFlutterLocalNotificationsPlugin? android = _plugin
-          .resolvePlatformSpecificImplementation<
+      final AndroidFlutterLocalNotificationsPlugin? android =
+          _plugin.resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>();
       await android?.requestNotificationsPermission();
     } catch (_) {

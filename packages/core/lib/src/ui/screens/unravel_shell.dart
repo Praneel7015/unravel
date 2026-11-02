@@ -294,8 +294,7 @@ class _BottomNavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final UnravelThemeExtension ext = context.unravelTheme;
     final UnravelTypography typo = UnravelTypography.fromExtension(ext);
-    final Color activeColor =
-        isSelected ? ext.primaryAccent : ext.textMuted;
+    final Color activeColor = isSelected ? ext.primaryAccent : ext.textMuted;
 
     return InkWell(
       borderRadius: BorderRadius.circular(12),
