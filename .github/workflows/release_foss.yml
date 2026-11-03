@@ -112,6 +112,11 @@ jobs:
 
           if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "Tag ${TAG} already exists locally/remotely without a release."
+            tag_commit="$(git rev-parse --verify "${TAG}^{commit}")"
+            if [ "$(git rev-parse HEAD)" != "$tag_commit" ]; then
+              echo "::error::HEAD is not ${TAG}. Run this workflow on ${TAG} to release its APK."
+              exit 1
+            fi
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
