@@ -29,9 +29,12 @@ breaking change. Useful scopes: `core`, `sync_foss`, `sync_store`, `foss`,
 flutter pub get
 dart format $(git ls-files '*.dart' ':!:*.g.dart')
 flutter analyze
-for pkg in packages/core packages/sync_foss packages/sync_store; do
-  (cd "$pkg" && flutter test) || break
-done
+# The outer subshell keeps `exit 1` from closing an interactive shell.
+(
+  for pkg in packages/core packages/sync_foss packages/sync_store; do
+    (cd "$pkg" && flutter test) || exit 1
+  done
+)
 ```
 
 CI runs the same checks, the F-Droid purity audit, a FOSS APK build, OSV,
@@ -43,10 +46,11 @@ Gitleaks and CodeQL. CodeRabbit reviews every PR against the rules in
 Release Please keeps a release PR open on `main`. Merging it tags `vX.Y.Z`,
 publishes the GitHub Release and attaches the FOSS APK. Add a
 `RELEASE_PLEASE_TOKEN` secret (a fine-grained PAT or GitHub App token with
-contents and pull-request write access) so CI runs on that PR. Without it the
-PR is opened with `GITHUB_TOKEN`, which starts no workflows: close and reopen
-the release PR, or push an empty commit to its branch, to run the required
-checks before merging.
+contents and pull-request write access) so CI runs on that PR automatically.
+Without it the PR is opened with `GITHUB_TOKEN`, and GitHub holds its
+`pull_request` workflow runs for approval. Someone with write access must
+approve those runs from the PR's Checks tab and wait for them to pass before
+merging.
 
 ## Ground rules
 
