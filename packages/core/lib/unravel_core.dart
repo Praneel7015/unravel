@@ -1,4 +1,4 @@
-library unravel_core;
+library;
 
 export 'src/audio/voice_capture_service.dart';
 export 'src/crypto/envelope_encryption_service.dart';

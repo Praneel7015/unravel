@@ -13,7 +13,9 @@ void main() {
   );
 
   group('StoreSyncEngine — Zero-Bill-Shock Entitlement Gate & E2EE Sync', () {
-    test(r'free tier ($0.00 gate) throws StoreEntitlementException before any HTTP call', () async {
+    test(
+        r'free tier ($0.00 gate) throws StoreEntitlementException before any HTTP call',
+        () async {
       int httpCalls = 0;
       final MockClient mockClient = MockClient((http.Request request) async {
         httpCalls += 1;
@@ -37,7 +39,9 @@ void main() {
       expect(httpCalls, 0);
     });
 
-    test('rejects payload >16,384 UTF-8 bytes with UnravelCryptoException before any HTTP call', () async {
+    test(
+        'rejects payload >16,384 UTF-8 bytes with UnravelCryptoException before any HTTP call',
+        () async {
       int httpCalls = 0;
       final MockClient mockClient = MockClient((http.Request request) async {
         httpCalls += 1;
@@ -61,7 +65,9 @@ void main() {
       expect(httpCalls, 0);
     });
 
-    test('trial and pro tiers POST encrypted envelopes and invoke delete_my_account RPC', () async {
+    test(
+        'trial and pro tiers POST encrypted envelopes and invoke delete_my_account RPC',
+        () async {
       http.Request? capturedSyncPost;
       http.Request? capturedDeleteRpc;
 
@@ -89,10 +95,13 @@ void main() {
       await trialEngine.pushEncryptedEnvelopes(<String>['v1:nonce1:ct1:mac1']);
       expect(capturedSyncPost, isNotNull);
       expect(capturedSyncPost!.method, 'POST');
-      expect(capturedSyncPost!.headers['apikey'], 'sb_publishable_test_key_123');
-      expect(capturedSyncPost!.headers['Authorization'], 'Bearer jwt_trial_token');
+      expect(
+          capturedSyncPost!.headers['apikey'], 'sb_publishable_test_key_123');
+      expect(
+          capturedSyncPost!.headers['Authorization'], 'Bearer jwt_trial_token');
 
-      final List<Object?> rows = jsonDecode(capturedSyncPost!.body) as List<Object?>;
+      final List<Object?> rows =
+          jsonDecode(capturedSyncPost!.body) as List<Object?>;
       expect(rows.length, 1);
       final Map<String, Object?> firstRow = rows.first! as Map<String, Object?>;
       expect(firstRow['encrypted_payload'], 'v1:nonce1:ct1:mac1');
@@ -103,12 +112,16 @@ void main() {
       expect(capturedDeleteRpc!.method, 'POST');
       expect(capturedDeleteRpc!.url.toString(),
           'https://project-ref.supabase.co/rest/v1/rpc/delete_my_account');
-      expect(capturedDeleteRpc!.headers['Authorization'], 'Bearer jwt_trial_token');
+      expect(capturedDeleteRpc!.headers['Authorization'],
+          'Bearer jwt_trial_token');
     });
   });
 
-  group('StoreCloudAiRelay — Entitlement Gate, Trial/Pro Quota Caps & Payload Size', () {
-    test('free tier throws StoreEntitlementException before any HTTP call', () async {
+  group(
+      'StoreCloudAiRelay — Entitlement Gate, Trial/Pro Quota Caps & Payload Size',
+      () {
+    test('free tier throws StoreEntitlementException before any HTTP call',
+        () async {
       int httpCalls = 0;
       final MockClient mockClient = MockClient((http.Request request) async {
         httpCalls += 1;
@@ -134,7 +147,9 @@ void main() {
       expect(httpCalls, 0);
     });
 
-    test('enforces 15-call trial cap, 20/day pro cap, and 16,384-byte reflection cap', () async {
+    test(
+        'enforces 15-call trial cap, 20/day pro cap, and 16,384-byte reflection cap',
+        () async {
       int httpCalls = 0;
       final MockClient mockClient = MockClient((http.Request request) async {
         httpCalls += 1;

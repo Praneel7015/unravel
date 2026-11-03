@@ -1,4 +1,4 @@
-library unravel_sync_store;
+library;
 
 import 'dart:convert';
 
@@ -31,8 +31,7 @@ class StoreCloudConfig {
   bool get isConfigured =>
       cloudUrl.isNotEmpty && supabasePublishableKey.isNotEmpty;
 
-  Uri get relayFunctionUri =>
-      Uri.parse('$cloudUrl/functions/v1/unravel-relay');
+  Uri get relayFunctionUri => Uri.parse('$cloudUrl/functions/v1/unravel-relay');
 
   Uri get encryptedSyncRestUri =>
       Uri.parse('$cloudUrl/rest/v1/encrypted_journal_envelopes');

@@ -33,12 +33,14 @@ const List<StoicLine> kDailyStoicLines = <StoicLine>[
     source: 'Letters from a Stoic',
   ),
   StoicLine(
-    quote: 'Make the best use of what is in your power, and take the rest as it happens.',
+    quote:
+        'Make the best use of what is in your power, and take the rest as it happens.',
     author: 'Epictetus',
     source: 'Discourses',
   ),
   StoicLine(
-    quote: 'The impediment to action advances action. What stands in the way becomes the way.',
+    quote:
+        'The impediment to action advances action. What stands in the way becomes the way.',
     author: 'Marcus Aurelius',
     source: 'Meditations',
   ),

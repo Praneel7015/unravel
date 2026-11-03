@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
@@ -56,7 +56,9 @@ class UnravelJournalController extends ChangeNotifier {
         voiceCaptureService =
             voiceCaptureService ?? EphemeralHardwareVoiceCaptureService(),
         _database = database,
-        _vault = database == null ? vaultStore : (vaultStore ?? FileJournalVaultStore()),
+        _vault = database == null
+            ? vaultStore
+            : (vaultStore ?? FileJournalVaultStore()),
         _clock = clock ?? DateTime.now,
         _storageMode = StorageArchitectureMode.localOnly,
         _intelligenceMode = isFossBuild
@@ -247,9 +249,8 @@ class UnravelJournalController extends ChangeNotifier {
     if (origin.isEmpty) {
       return null;
     }
-    final String base = origin.endsWith('/')
-        ? origin.substring(0, origin.length - 1)
-        : origin;
+    final String base =
+        origin.endsWith('/') ? origin.substring(0, origin.length - 1) : origin;
     return '$base/$page';
   }
 
@@ -379,8 +380,7 @@ class UnravelJournalController extends ChangeNotifier {
     final SecretKey key = await _ensureMasterKey();
     final int index =
         _openThreads.indexWhere((OpenThreadRecord t) => t.id == threadId);
-    final OpenThreadRecord? existing =
-        index >= 0 ? _openThreads[index] : null;
+    final OpenThreadRecord? existing = index >= 0 ? _openThreads[index] : null;
 
     if (existing == null) {
       throw ArgumentError('That moment is not on this device.');
@@ -409,20 +409,20 @@ class UnravelJournalController extends ChangeNotifier {
 
     final DateTime now = _clock();
     _openThreads[index] = OpenThreadRecord(
-        id: existing.id,
-        eventTitle: existing.eventTitle,
-        worries: existing.worries,
-        groundingAnchor: existing.groundingAnchor,
-        encryptedTranscript: existing.encryptedTranscript,
-        encryptedSyncPayload: existing.encryptedSyncPayload,
-        predictedFear: existing.predictedFear,
-        eventOccursAt: existing.eventOccursAt,
-        scheduledCheckInAt: existing.scheduledCheckInAt,
-        status: OpenThreadStatus.unraveled,
-        createdAt: existing.createdAt,
-        updatedAt: now,
-        resolvedAt: now,
-      );
+      id: existing.id,
+      eventTitle: existing.eventTitle,
+      worries: existing.worries,
+      groundingAnchor: existing.groundingAnchor,
+      encryptedTranscript: existing.encryptedTranscript,
+      encryptedSyncPayload: existing.encryptedSyncPayload,
+      predictedFear: existing.predictedFear,
+      eventOccursAt: existing.eventOccursAt,
+      scheduledCheckInAt: existing.scheduledCheckInAt,
+      status: OpenThreadStatus.unraveled,
+      createdAt: existing.createdAt,
+      updatedAt: now,
+      resolvedAt: now,
+    );
 
     _scheduledNotificationThreadIds.remove(threadId);
     await notificationService.cancelForThread(threadId);
@@ -572,7 +572,8 @@ class UnravelJournalController extends ChangeNotifier {
   /// Wraps a new master key. Setup stays unfinished until the later screens end.
   Future<void> savePassphrase(String passphrase) async {
     final SecretKey key = await _encryptionService.generateMasterDataKey();
-    final WrappedMasterKeyBundle wrapped = await _encryptionService.wrapMasterKey(
+    final WrappedMasterKeyBundle wrapped =
+        await _encryptionService.wrapMasterKey(
       masterDataKey: key,
       passphrase: passphrase,
     );
@@ -648,7 +649,8 @@ class UnravelJournalController extends ChangeNotifier {
         'groundingAnchor': thread.groundingAnchor,
         'predictedFear': thread.predictedFear,
         'eventOccursAt': thread.eventOccursAt.toUtc().toIso8601String(),
-        'scheduledCheckInAt': thread.scheduledCheckInAt.toUtc().toIso8601String(),
+        'scheduledCheckInAt':
+            thread.scheduledCheckInAt.toUtc().toIso8601String(),
         'status': thread.status.wireValue,
         'createdAt': thread.createdAt.toUtc().toIso8601String(),
         'updatedAt': thread.updatedAt.toUtc().toIso8601String(),
@@ -678,7 +680,9 @@ class UnravelJournalController extends ChangeNotifier {
     );
     return JournalArchive.encode(
       JournalArchive(
-        edition: isFossBuild ? JournalArchive.fossEdition : JournalArchive.storeEdition,
+        edition: isFossBuild
+            ? JournalArchive.fossEdition
+            : JournalArchive.storeEdition,
         wrappedKey: wrapped,
         encryptedPayload: encrypted,
       ),
@@ -706,7 +710,8 @@ class UnravelJournalController extends ChangeNotifier {
     );
     final Object? decoded = jsonDecode(clear);
     if (decoded is! Map) {
-      throw const JournalTransferException('This file is not an Unravel journal.');
+      throw const JournalTransferException(
+          'This file is not an Unravel journal.');
     }
     final SecretKey localKey = await _ensureMasterKey();
     final Object? rawThreads = decoded['threads'];
@@ -716,7 +721,8 @@ class UnravelJournalController extends ChangeNotifier {
           continue;
         }
         final Map<String, Object?> json = raw.map(
-          (dynamic key, dynamic value) => MapEntry(key.toString(), value as Object?),
+          (dynamic key, dynamic value) =>
+              MapEntry(key.toString(), value as Object?),
         );
         await _mergeImportedThread(json, localKey);
       }
@@ -728,7 +734,8 @@ class UnravelJournalController extends ChangeNotifier {
           continue;
         }
         final Map<String, Object?> json = raw.map(
-          (dynamic key, dynamic value) => MapEntry(key.toString(), value as Object?),
+          (dynamic key, dynamic value) =>
+              MapEntry(key.toString(), value as Object?),
         );
         await _mergeImportedLog(json, localKey);
       }
@@ -763,7 +770,8 @@ class UnravelJournalController extends ChangeNotifier {
     final List<UnraveledWorryItem> worries = <UnraveledWorryItem>[];
     if (rawWorries is List) {
       for (int i = 0; i < rawWorries.length; i++) {
-        worries.add(UnraveledWorryItem.fromJson(rawWorries[i], fallbackIndex: i + 1));
+        worries.add(
+            UnraveledWorryItem.fromJson(rawWorries[i], fallbackIndex: i + 1));
       }
     }
     final List<UnraveledWorryItem> normalized =
@@ -790,9 +798,9 @@ class UnravelJournalController extends ChangeNotifier {
       encryptedTranscript: encryptedTranscript,
       encryptedSyncPayload: encryptedSyncPayload,
       predictedFear: fear,
-      eventOccursAt:
-          DateTime.tryParse((json['eventOccursAt'] as String?) ?? '')?.toUtc() ??
-              updatedAt,
+      eventOccursAt: DateTime.tryParse((json['eventOccursAt'] as String?) ?? '')
+              ?.toUtc() ??
+          updatedAt,
       scheduledCheckInAt: DateTime.tryParse(
             (json['scheduledCheckInAt'] as String?) ?? '',
           )?.toUtc() ??
@@ -802,7 +810,8 @@ class UnravelJournalController extends ChangeNotifier {
           DateTime.tryParse((json['createdAt'] as String?) ?? '')?.toUtc() ??
               updatedAt,
       updatedAt: updatedAt,
-      resolvedAt: DateTime.tryParse((json['resolvedAt'] as String?) ?? '')?.toUtc(),
+      resolvedAt:
+          DateTime.tryParse((json['resolvedAt'] as String?) ?? '')?.toUtc(),
     );
     if (existingIndex >= 0) {
       _openThreads[existingIndex] = record;
@@ -831,7 +840,8 @@ class UnravelJournalController extends ChangeNotifier {
         notes.isEmpty) {
       return;
     }
-    if (_openThreads.every((OpenThreadRecord thread) => thread.id != threadId)) {
+    if (_openThreads
+        .every((OpenThreadRecord thread) => thread.id != threadId)) {
       return;
     }
     final DateTime recordedAt =

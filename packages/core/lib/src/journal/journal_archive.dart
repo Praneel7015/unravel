@@ -59,7 +59,8 @@ class JournalArchive {
       );
     }
     final Map<String, Object?> json = decoded.map(
-      (dynamic key, dynamic value) => MapEntry(key.toString(), value as Object?),
+      (dynamic key, dynamic value) =>
+          MapEntry(key.toString(), value as Object?),
     );
     if (json['magic'] != magic || json['schema'] != schemaVersion) {
       throw const JournalTransferException(

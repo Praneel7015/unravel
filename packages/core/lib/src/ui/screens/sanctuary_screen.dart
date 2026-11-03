@@ -70,7 +70,8 @@ class SanctuaryScreen extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: ext.card,
-        content: Text(message, style: typo.bodyMedium.copyWith(color: ext.textPrimary)),
+        content: Text(message,
+            style: typo.bodyMedium.copyWith(color: ext.textPrimary)),
       ),
     );
   }
@@ -145,9 +146,11 @@ class SanctuaryScreen extends StatelessWidget {
       if (passphrase == null || passphrase.isEmpty || !context.mounted) {
         return;
       }
-      await controller.importJournalArchive(bytes: bytes, passphrase: passphrase);
+      await controller.importJournalArchive(
+          bytes: bytes, passphrase: passphrase);
       if (context.mounted) {
-        _tell(context, 'The journal was brought in. Threads already here were kept.');
+        _tell(context,
+            'The journal was brought in. Threads already here were kept.');
       }
     } on JournalTransferException catch (error) {
       if (context.mounted) {
@@ -201,8 +204,7 @@ class SanctuaryScreen extends StatelessWidget {
                   InkWell(
                     borderRadius: BorderRadius.circular(10),
                     onTap: () => setDialogState(
-                      () =>
-                          acknowledgeIrreversible = !acknowledgeIrreversible,
+                      () => acknowledgeIrreversible = !acknowledgeIrreversible,
                     ),
                     child: Container(
                       padding: const EdgeInsets.all(10),
@@ -486,8 +488,7 @@ class SanctuaryScreen extends StatelessWidget {
                       previewCanvas: const Color(0xFFF6F5F0),
                       previewBorder: const Color(0xFFDCD8CE),
                       previewAccent: const Color(0xFF4A6B53),
-                      isSelected:
-                          activePalette == CircadianPalette.morningMist,
+                      isSelected: activePalette == CircadianPalette.morningMist,
                       onTap: () => controller.selectPaletteManually(
                         CircadianPalette.morningMist,
                       ),
@@ -772,8 +773,7 @@ class SanctuaryScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: () =>
-                            _showTwoStepPurgeConfirmation(context),
+                        onPressed: () => _showTwoStepPurgeConfirmation(context),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
                             color: ext.terracottaAccent.withValues(alpha: 0.65),
@@ -835,7 +835,6 @@ class SanctuaryScreen extends StatelessWidget {
                       style: typo.bodyMedium,
                     ),
                     const SizedBox(height: 14),
-
                     if (!controller.isFossBuild) ...<Widget>[
                       _IntelligenceOptionTile(
                         title: 'Managed Multi-Model Relay',
@@ -849,7 +848,6 @@ class SanctuaryScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                     ],
-
                     _IntelligenceOptionTile(
                       title: 'Bring Your Own Key or Local Daemon',
                       description:
@@ -1165,9 +1163,7 @@ class _IntelligenceOptionTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Icon(
-              isSelected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_off,
+              isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
               size: 18,
               color: isSelected ? ext.primaryAccent : ext.textMuted,
             ),
@@ -1284,7 +1280,8 @@ class _LegalRow extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Expanded(
-                child: Text(title, softWrap: true, style: typo.settingTitleSans),
+                child:
+                    Text(title, softWrap: true, style: typo.settingTitleSans),
               ),
               Icon(Icons.chevron_right, color: ext.textMuted),
             ],

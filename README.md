@@ -1,5 +1,7 @@
 # Unravel — Circadian Botanical & Stoic Field Journal
 
+[![CI](https://github.com/Praneel7015/unravel/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Praneel7015/unravel/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/Praneel7015/unravel/graph/badge.svg)](https://codecov.io/gh/Praneel7015/unravel) [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Praneel7015/unravel/badge)](https://scorecard.dev/viewer/?uri=github.com/Praneel7015/unravel) [![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/Praneel7015/unravel?utm_source=oss&utm_medium=github&utm_campaign=Praneel7015%2Funravel&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)](https://coderabbit.ai)
+
 > *“We suffer more often in imagination than in reality.”* — **Seneca**, *Letters from a Stoic, XIII*
 
 **Unravel** is a local-first, end-to-end encrypted Stoic field journal designed to help you untangle anticipatory worry **before** important life moments and gently record how reality actually unfolded **afterward**.

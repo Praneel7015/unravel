@@ -171,7 +171,8 @@ class _UnravelKnotSheetState extends State<UnravelKnotSheet> {
           return;
         }
         setState(() {
-          _voiceNote = 'Listening. Speak the worry. Nothing is written to disk.';
+          _voiceNote =
+              'Listening. Speak the worry. Nothing is written to disk.';
         });
       } on PlatformException catch (error) {
         if (!mounted) {
@@ -211,8 +212,7 @@ class _UnravelKnotSheetState extends State<UnravelKnotSheet> {
           indexNumber: '02',
           worryText: _worryTwoController.text.trim(),
           controlScope: WorryControlScope.beyondMyControl,
-          actionOrGrounding:
-              'This part belongs to fortune, not to your craft.',
+          actionOrGrounding: 'This part belongs to fortune, not to your craft.',
         ),
     ];
 
@@ -278,9 +278,8 @@ class _UnravelKnotSheetState extends State<UnravelKnotSheet> {
   Widget build(BuildContext context) {
     final UnravelThemeExtension ext = context.unravelTheme;
     final UnravelTypography typo = UnravelTypography.fromExtension(ext);
-    final int entryNumber =
-        widget.controller.activeOpenThreads.length +
-            widget.controller.perspectiveEntries.length;
+    final int entryNumber = widget.controller.activeOpenThreads.length +
+        widget.controller.perspectiveEntries.length;
 
     return DraggableScrollableSheet(
       expand: false,
@@ -1010,8 +1009,7 @@ class _EditableWorryCard extends StatelessWidget {
     final UnravelThemeExtension ext = context.unravelTheme;
     final UnravelTypography typo = UnravelTypography.fromExtension(ext);
     final bool isWithin = scope == WorryControlScope.withinMyControl;
-    final Color badgeColor =
-        isWithin ? ext.primaryAccent : ext.secondaryAccent;
+    final Color badgeColor = isWithin ? ext.primaryAccent : ext.secondaryAccent;
 
     return Container(
       padding: const EdgeInsets.all(14),

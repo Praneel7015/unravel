@@ -1,0 +1,110 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: en-US
+
+reviews:
+  profile: chill
+  high_level_summary: true
+  poem: false
+  review_status: true
+  path_filters:
+    - "!**/*.g.dart"
+    - "!**/pubspec.lock"
+    - "!**/build/**"
+    - "!**/*.ttf"
+    - "!**/*.png"
+    - "!**/*.zip"
+    - "!apps/unravel_foss/android/app/src/main/assets/vosk-model-*/**"
+    - "!CHANGELOG.md"
+  path_instructions:
+    - path: "**/*.dart"
+      instructions: |
+        Unravel is a Stoic journal with zero streaks or engagement mechanics,
+        on principle. Flag any day/visit streak counter, flame or badge,
+        leaderboard, "don't break the chain" copy, guilt-inducing or
+        re-engagement notifications, variable rewards, or usage-maximising
+        nudges. The only notification allowed is the single scheduled
+        "After a Moment" check-in, posted with private lock-screen visibility.
+        Code is Dart 3.6+ with strict-casts/inference/raw-types; prefer
+        explicit types, final locals and awaited futures as the analyzer
+        config requires, and no `// TODO` in security or encryption code.
+    - path: "packages/core/lib/src/{crypto,database,journal}/**"
+      instructions: |
+        Encryption and on-device storage. Plaintext journal text, worries,
+        transcripts, the Master Data Key, derived KEKs and passphrases must
+        never be logged (print, debugPrint, log, exception messages,
+        toString), written unencrypted to disk, put on the clipboard, or sent
+        off-device. Check: AES-256-GCM with a fresh random nonce per
+        encryption, AAD bound to the record id, authentication failures
+        surfaced as UnravelCryptoException rather than swallowed, Argon2id
+        parameters not weakened, constant-size caps (16384 bytes for synced
+        payloads) enforced before persistence, and no fallback to a weaker or
+        unauthenticated mode. New encryption paths need a round-trip and a
+        tamper test.
+    - path: "packages/core/lib/src/{audio,notifications,ui}/**"
+      instructions: |
+        Voice capture and notifications must stay on-device: no raw audio
+        persisted or uploaded, no plaintext worries in notification bodies or
+        payloads. UI must not introduce streaks, counts of days journaled, or
+        engagement prompts.
+    - path: "packages/sync_foss/**"
+      instructions: |
+        Must stay free of proprietary SDKs (F-Droid). Air-gapped is the
+        default: no network call may happen unless the user configured a
+        WebDAV, self-hosted or BYOK/Ollama endpoint. Only encrypted
+        envelopes leave the device; reject cleartext http:// except
+        loopback. Flag any new network call, telemetry, analytics or
+        crash reporting without a clear user-facing reason.
+    - path: "packages/sync_store/**"
+      instructions: |
+        Store edition sync and AI relay. Only encrypted envelopes go to the
+        cloud; the entitlement gate and the trial/pro quota caps must run
+        before any HTTP call. No keys, tokens or plaintext in logs. Flag any
+        network call that isn't sync, the relay, or billing.
+    - path: "apps/unravel_foss/**"
+      instructions: |
+        F-Droid entrypoint: zero proprietary SDKs (Firebase, Play Services,
+        billing, RevenueCat, Supabase) and no hardcoded commercial URLs or
+        API keys. Android manifest changes that add INTERNET or other
+        permissions need a stated reason.
+    - path: "apps/unravel_store/**"
+      instructions: |
+        Cloud URLs and keys come only from --dart-define at build time; flag
+        any committed endpoint, key or token.
+    - path: "supabase/**"
+      instructions: |
+        Edge functions and SQL for the store edition. The server must only
+        ever see ciphertext. Check entitlement checks, quota caps, RLS and
+        the octet_length <= 16384 constraints; flag secrets in code or logs.
+    - path: "**/test/**"
+      instructions: |
+        Prefer focused flutter_test cases that cover failure paths:
+        tampered ciphertext, wrong keys, oversize payloads, and proof that
+        no network call happens before a gate or in air-gapped mode.
+    - path: ".github/workflows/**"
+      instructions: |
+        Actions must be pinned to full commit SHAs with a version comment,
+        use least-privilege permissions, and never interpolate untrusted
+        event fields straight into run: scripts.
+  pre_merge_checks:
+    # The 80% docstring target is CodeRabbit's default, not a repo rule.
+    docstrings:
+      mode: "off"
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "^main$"
+  tools:
+    gitleaks:
+      enabled: true
+    actionlint:
+      enabled: true
+    yamllint:
+      enabled: true
+    markdownlint:
+      enabled: true
+    shellcheck:
+      enabled: true
+
+chat:
+  auto_reply: true

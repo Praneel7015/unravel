@@ -1,5 +1,8 @@
 name: unravel
 publish_to: none
+# Release version for the whole workspace, managed by Release Please.
+# The release workflow mirrors it into apps/*/pubspec.yaml.
+version: 0.1.0+1
 
 environment:
   sdk: ^3.6.0

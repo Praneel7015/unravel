@@ -19,3 +19,6 @@ Thumbs.db
 *.keystore
 **/local.properties
 **/key.properties
+
+# Test coverage
+coverage/
