@@ -101,6 +101,11 @@ jobs:
           set -euo pipefail
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release ${TAG} already exists. Uploading a fresh APK asset."
+            tag_commit="$(git rev-parse --verify "${TAG}^{commit}")"
+            if [ "$(git rev-parse HEAD)" != "$tag_commit" ]; then
+              echo "::error::HEAD is not ${TAG}. Run this workflow on ${TAG} to rebuild its APK."
+              exit 1
+            fi
             gh release upload "$TAG" "dist/unravel-foss-${VERSION}.apk" --clobber
             exit 0
           fi
